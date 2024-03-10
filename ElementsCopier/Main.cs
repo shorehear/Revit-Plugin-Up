@@ -1,8 +1,7 @@
-﻿using Autodesk.Revit.DB;
+﻿using Autodesk.Revit.Attributes;
+using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using Autodesk.Revit.Attributes;
 using System;
-using System.Collections.Generic;
 
 namespace ElementsCopier
 {
@@ -18,8 +17,14 @@ namespace ElementsCopier
                 UIDocument uidoc = uiapp.ActiveUIDocument;
                 Document doc = uidoc.Document;
 
-                SelectElements selectElementsWindow = new SelectElements(commandData, doc);
-                selectElementsWindow.Show();
+               
+                SelectionWindow selectionWindow = new SelectionWindow(doc, commandData);
+                selectionWindow.ElementSelectionEvent += (sender, args) => HandleElementSelection(selectionWindow);
+
+                selectionWindow.Show();
+                selectionWindow.HandleElementSelection();
+
+
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
@@ -28,9 +33,14 @@ namespace ElementsCopier
             catch (Exception ex)
             {
                 message = ex.Message;
-                return Result.Failed;
             }
+
             return Result.Succeeded;
+        }
+
+        private void HandleElementSelection(SelectionWindow selectionWindow)
+        {
+            selectionWindow.HandleElementSelection();
         }
     }
 }
