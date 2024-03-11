@@ -4,17 +4,17 @@
 library
 C#
 .cs
-C:\Users\kaidy\source\repos\Revit-Plugin-Up\ElementsCopier\obj\Debug\
+C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\
 ElementsCopier
 none
 false
 DEBUG;TRACE
 
-11163665192
+1-1036092129
 
-4261901513
+5-518420885
 151665652090
-SelectionWindow.xaml;
+ElementsSelection.xaml;
 
-True
+False
 
