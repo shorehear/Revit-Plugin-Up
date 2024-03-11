@@ -51,7 +51,7 @@ namespace ElementsCopier
 
         private void InitializeComponent()
         {
-            Title = "Менеджер копирования";
+            Title = "Менеджер выбора элементов";
             Width = 500;
             Height = 400;
 
@@ -71,8 +71,6 @@ namespace ElementsCopier
             {
                 Content = "Необходимые элементы выбраны.",
                 Margin = new Thickness(10, 10, 0, 0),
-
-                HorizontalAlignment = HorizontalAlignment.Right
             };
             endSelecting.Click+= endSelecting_Click;
 
@@ -112,14 +110,11 @@ namespace ElementsCopier
                 StringBuilder elementsText = new StringBuilder("Выбранные элементы:\n");
                 foreach (var element in selectedElements)
                 {
-                    if (element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
-                    {
-                        elementsText.Append("\nВыбрана линия направления");
-                    }
-                    else
-                    {
                         elementsText.Append(element.Name + " (" + element.ToString() + ")\n");
-                    }
+                }
+                if (selectedLine != null)
+                {
+                    elementsText.Append("\n Выбрана линия направления");
                 }
 
                 selectedElementsTextBox.Text = elementsText.ToString();
@@ -165,29 +160,32 @@ namespace ElementsCopier
 
                         if (selectedElement.Category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
                         {
-                            if (selectedElements.Any(elem => elem.Id.IntegerValue == pickedRef.ElementId.IntegerValue))
+                            if (selectedLine != null)
                             {
-                                MessageBox.Show("Направляющая линия уже выбрана!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                MessageBox.Show("Уже выбрана линия модели!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                                 return;
                             }
                             else
                             {
                                 selectedLine = ((CurveElement)selectedElement).GeometryCurve as Line;
+                                UpdateSelectedElementsTextBox();
                             }
-                        }
-
-                        if (!selectedElements.Any(elem => elem.Id == selectedElement.Id))
-                        {
-                            selectedElements.Add(selectedElement);
-
-                            //вызов выбора элемента и передача выбранного элемента
-                            ElementSelectionEvent?.Invoke(this, selectedElement);
-
-                            UpdateSelectedElementsTextBox();
                         }
                         else
                         {
-                            MessageBox.Show("Этот элемент уже выбран!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            if (!selectedElements.Any(elem => elem.Id == selectedElement.Id))
+                            {
+                                selectedElements.Add(selectedElement);
+
+                                // вызов выбора элемента и передача выбранного элемента
+                                ElementSelectionEvent?.Invoke(this, selectedElement);
+
+                                UpdateSelectedElementsTextBox();
+                            }
+                            else
+                            {
+                                MessageBox.Show("Этот элемент уже выбран!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                            }
                         }
                     }
 
@@ -196,12 +194,7 @@ namespace ElementsCopier
                 catch (Autodesk.Revit.Exceptions.OperationCanceledException)
                 {
                     continueSelecting = false;
-                    Close();
                 }
-            }
-            else
-            {
-                Close();
             }
         }
 
@@ -209,6 +202,11 @@ namespace ElementsCopier
         {
             continueSelecting = false; // флаг продолжения выбора элементов в false
             RequestElementSelection(); // обработка завершения выбора элементов
+
+            ElementsCopier elementsCopier = new ElementsCopier(selectedElements, selectedLine); 
+
+            SettingsWindow settingsWindow = new SettingsWindow(selectedElements);
+            settingsWindow.Show();
         }
     }
 }

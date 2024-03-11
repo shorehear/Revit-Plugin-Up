@@ -1,25 +1,29 @@
 ﻿using Autodesk.Revit.DB;
-using System.Linq;
 using System.Collections.Generic;
 
-/*namespace ElementsCopier
+namespace ElementsCopier
 {
     public class ElementsCopier
     {
-        private readonly Document doc;
-        private readonly List<Element> selectedElements;
-        private readonly Line selectedLine;
+        private List<Element> selectedElements;
+        private Line selectedLine;
 
-        public int AmountOfElements;
-        public double DistanceBetweenElements;
 
-        public ElementsCopier(Document doc, List<Element> selectedElements, Line selectedLine = null)
+        private List<int> amountCopiedElements;
+        private List<double> distanceBetweenCopiedElements;
+
+        public ElementsCopier(List<Element> selectedElements, Line selectedLine)
         {
-            this.doc = doc;
-            this.selectedElements = selectedElements;
             this.selectedLine = selectedLine;
+            this.selectedElements = selectedElements;
         }
 
+
+    }
+}
+
+
+/*
         public void CopyElements()
         {
             if (selectedElement != null && selectedLine != null)
