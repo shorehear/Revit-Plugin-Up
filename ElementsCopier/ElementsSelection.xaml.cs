@@ -14,7 +14,9 @@ namespace ElementsCopier
     {
         private Document doc;
         private UIDocument uidoc;
+
         private List<Element> selectedElements;
+        Line selectedLine = null;
 
 
         private Label statusLabel;
@@ -22,9 +24,9 @@ namespace ElementsCopier
         private System.Windows.Controls.TextBox selectedElementsTextBox;
         private Button endSelecting;
 
-
         bool continueSelecting;
         private string status;
+
         public string Status
         {
             get { return status; }
@@ -84,7 +86,6 @@ namespace ElementsCopier
                 Width = 400
             };
 
-           
             StackPanel panel = new StackPanel();
             panel.Children.Add(infoLabel);
             panel.Children.Add(statusLabel);
@@ -104,7 +105,6 @@ namespace ElementsCopier
 
         private void UpdateSelectedElementsTextBox()
         {
-
             selectedElementsTextBox.Text = "Нет выбранных элементов";
 
             if(selectedElements != null && selectedElements.Any())
@@ -112,7 +112,14 @@ namespace ElementsCopier
                 StringBuilder elementsText = new StringBuilder("Выбранные элементы:\n");
                 foreach (var element in selectedElements)
                 {
-                    elementsText.Append(element.Name + " (" + element.ToString() + ")\n");
+                    if (element.Category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
+                    {
+                        elementsText.Append("\nВыбрана линия направления");
+                    }
+                    else
+                    {
+                        elementsText.Append(element.Name + " (" + element.ToString() + ")\n");
+                    }
                 }
 
                 selectedElementsTextBox.Text = elementsText.ToString();
@@ -145,7 +152,6 @@ namespace ElementsCopier
             }
         }
 
-
         private void RequestElementSelection()
         {
             if (continueSelecting)
@@ -153,21 +159,38 @@ namespace ElementsCopier
                 try
                 {
                     Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
-                    Element selectedElement = doc.GetElement(pickedRef.ElementId);
-
-                    if (!selectedElements.Contains(selectedElement))
+                    if (pickedRef != null)
                     {
-                        //вызов события выбора элемента и передача выбранного элемента
-                        ElementSelectionEvent?.Invoke(this, selectedElement);
-                        selectedElements.Add(selectedElement);
+                        Element selectedElement = doc.GetElement(pickedRef.ElementId);
 
-                        UpdateSelectedElementsTextBox();
+                        if (selectedElement.Category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
+                        {
+                            if (selectedElements.Any(elem => elem.Id.IntegerValue == pickedRef.ElementId.IntegerValue))
+                            {
+                                MessageBox.Show("Направляющая линия уже выбрана!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                                return;
+                            }
+                            else
+                            {
+                                selectedLine = ((CurveElement)selectedElement).GeometryCurve as Line;
+                            }
+                        }
+
+                        if (!selectedElements.Any(elem => elem.Id == selectedElement.Id))
+                        {
+                            selectedElements.Add(selectedElement);
+
+                            //вызов выбора элемента и передача выбранного элемента
+                            ElementSelectionEvent?.Invoke(this, selectedElement);
+
+                            UpdateSelectedElementsTextBox();
+                        }
+                        else
+                        {
+                            MessageBox.Show("Этот элемент уже выбран!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+                        }
                     }
-                    else
-                    {
-                        MessageBox.Show("Этот элемент уже выбран!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
-                        return;
-                    }
+
                     RequestElementSelection();
                 }
                 catch (Autodesk.Revit.Exceptions.OperationCanceledException)
@@ -181,7 +204,6 @@ namespace ElementsCopier
                 Close();
             }
         }
-
 
         private void endSelecting_Click(object sender, RoutedEventArgs e)
         {
