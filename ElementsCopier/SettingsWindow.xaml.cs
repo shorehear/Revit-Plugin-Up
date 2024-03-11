@@ -31,7 +31,7 @@ namespace ElementsCopier
             };
 
             grid.Children.Add(aboutSettings);
-            Grid.SetColumnSpan(aboutSettings, 7); // Update the column span
+            Grid.SetColumnSpan(aboutSettings, 7); 
 
             for (int i = 0; i < selectedElements.Count; i++)
             {
@@ -51,25 +51,25 @@ namespace ElementsCopier
                 Grid.SetColumn(copiesTextBox, 1);
                 Grid.SetRow(copiesTextBox, i + 1);
 
-                // TextBox for "координаты копирования"
+                //координаты копирования
                 TextBox coordinatesTextBox = new TextBox();
                 coordinatesTextBox.Width = 100;
                 coordinatesTextBox.Margin = new Thickness(10, 0, 0, 0);
-                Grid.SetColumn(coordinatesTextBox, 2); // Update the column index
+                Grid.SetColumn(coordinatesTextBox, 2); 
                 Grid.SetRow(coordinatesTextBox, i + 1);
 
-                // TextBox for "дистанция между копиями"
+                //дистанция между копиями
                 TextBox distanceTextBox = new TextBox();
                 distanceTextBox.Width = 100;
                 distanceTextBox.Margin = new Thickness(10, 0, 0, 0);
-                Grid.SetColumn(distanceTextBox, 3); // Update the column index
+                Grid.SetColumn(distanceTextBox, 3); 
                 Grid.SetRow(distanceTextBox, i + 1);
 
-                // TextBox for "количество копий"
+                //количество копий
                 TextBox quantityTextBox = new TextBox();
                 quantityTextBox.Width = 50;
                 quantityTextBox.Margin = new Thickness(10, 0, 0, 0);
-                Grid.SetColumn(quantityTextBox, 4); // Update the column index
+                Grid.SetColumn(quantityTextBox, 4);
                 Grid.SetRow(quantityTextBox, i + 1);
 
                 Button decreaseButton = new Button();
@@ -84,7 +84,7 @@ namespace ElementsCopier
                     }
                 };
                 decreaseButton.VerticalAlignment = VerticalAlignment.Center;
-                Grid.SetColumn(decreaseButton, 5); // Update the column index
+                Grid.SetColumn(decreaseButton, 5); 
                 Grid.SetRow(decreaseButton, i + 1);
 
                 Button increaseButton = new Button();
@@ -99,7 +99,7 @@ namespace ElementsCopier
                     }
                 };
                 increaseButton.VerticalAlignment = VerticalAlignment.Center;
-                Grid.SetColumn(increaseButton, 6); // Update the column index
+                Grid.SetColumn(increaseButton, 6); 
                 Grid.SetRow(increaseButton, i + 1);
 
                 grid.Children.Add(elementLabel);
