@@ -83,7 +83,7 @@ C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\Elements
 C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\ElementsCopier.csproj.CopyComplete
 C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\ElementsCopier.dll
 C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\ElementsCopier.pdb
-C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\ElementsSelection.g.cs
-C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\ElementsSelection.baml
-C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\SettingsWindow.g.cs
-C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\SettingsWindow.baml
+C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\Services\ElementsSelection.g.cs
+C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\Services\SettingsWindow.g.cs
+C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\Services\ElementsSelection.baml
+C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\Services\SettingsWindow.baml

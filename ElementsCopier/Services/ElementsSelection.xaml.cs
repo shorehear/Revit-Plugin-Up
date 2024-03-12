@@ -52,7 +52,7 @@ namespace ElementsCopier
         private void InitializeComponent()
         {
             Title = "Менеджер выбора элементов";
-            Width = 500;
+            Width = 600;
             Height = 400;
 
             infoLabel = new Label()
@@ -70,7 +70,11 @@ namespace ElementsCopier
             endSelecting = new Button()
             {
                 Content = "Необходимые элементы выбраны.",
-                Margin = new Thickness(10, 10, 0, 0),
+                Width = 200, 
+                Height = 20, 
+                Margin = new Thickness(0, 10, 0, 0), 
+                HorizontalAlignment = HorizontalAlignment.Center,
+                VerticalAlignment = VerticalAlignment.Center 
             };
             endSelecting.Click+= endSelecting_Click;
 
@@ -80,8 +84,8 @@ namespace ElementsCopier
                 Margin = new Thickness(10, 10, 0, 0),
                 VerticalScrollBarVisibility = ScrollBarVisibility.Auto,
                 HorizontalScrollBarVisibility = ScrollBarVisibility.Auto,
-                Height = 100,
-                Width = 400
+                Height = 200,
+                Width = 500
             };
 
             StackPanel panel = new StackPanel();
@@ -205,7 +209,7 @@ namespace ElementsCopier
 
             ElementsCopier elementsCopier = new ElementsCopier(selectedElements, selectedLine); 
 
-            SettingsWindow settingsWindow = new SettingsWindow(selectedElements);
+            SettingsWindow settingsWindow = new SettingsWindow(selectedElements, elementsCopier);
             settingsWindow.Show();
         }
     }

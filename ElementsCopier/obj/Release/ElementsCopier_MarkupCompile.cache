@@ -4,17 +4,17 @@
 library
 C#
 .cs
-C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\
+C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Release\
 ElementsCopier
 none
 false
-DEBUG;TRACE
+TRACE
 
 21781910150
 
-6-1897428811
+5475760364
 151665652090
 Services\ElementsSelection.xaml;Services\SettingsWindow.xaml;
 
-False
+True
 
