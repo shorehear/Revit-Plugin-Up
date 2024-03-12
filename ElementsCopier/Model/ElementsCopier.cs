@@ -8,17 +8,74 @@ namespace ElementsCopier
         private List<Element> selectedElements;
         private Line selectedLine;
 
+        private Document doc;
 
-        private List<int> amountCopiedElements;
-        private List<double> distanceBetweenCopiedElements;
+        private XYZ coordinatesPoint;
+        private double distance;
+        private int quantity;
 
-        public ElementsCopier(List<Element> selectedElements, Line selectedLine)
+        public ElementsCopier(List<Element> selectedElements, XYZ coordinatesPoint, double distance, int quantity)
         {
-            this.selectedLine = selectedLine;
+            selectedLine = null;
             this.selectedElements = selectedElements;
+            this.coordinatesPoint = coordinatesPoint;
+            this.distance = distance;
+            this.quantity = quantity;
         }
 
 
+        public ElementsCopier(List<Element> selectedElements, Line selectedLine, XYZ coordinatesPoint, double distance, int quantity)
+        {
+            this.selectedLine = selectedLine;
+            this.selectedElements = selectedElements;
+            this.coordinatesPoint = coordinatesPoint;
+            this.distance = distance;
+            this.quantity = quantity;
+        }
+
+        public void CopyElements()
+        {
+            if (selectedElements != null)
+            {
+                Transaction transaction = new Transaction(doc, "Копирование элементов");
+                if (transaction.Start() == TransactionStatus.Started)
+                {
+                    XYZ translation = new XYZ(distance, 0, 0);
+
+                    if (selectedLine != null)
+                    {
+                        double rotationAngle = GetRotationAngle(selectedElements.First(), selectedLine);
+
+                        foreach (Element selectedElement in selectedElements)
+                        {
+                            ICollection<ElementId> newElementIds = ElementTransformUtils.CopyElement(doc, selectedElement.Id, translation);
+
+                            if (newElementIds.Count > 0)
+                            {
+                                Element newElement = doc.GetElement(newElementIds.First());
+                                ElementTransformUtils.RotateElement(doc, newElement.Id, Line.CreateBound(new XYZ(0, 0, 0), XYZ.BasisZ), rotationAngle);
+
+                                translation = translation.Add(new XYZ(distance, 0, 0));
+                            }
+                        }
+                    }
+                    else
+                    {
+                        foreach (Element selectedElement in selectedElements)
+                        {
+                            ICollection<ElementId> newElementIds = ElementTransformUtils.CopyElement(doc, selectedElement.Id, translation);
+
+                            if (newElementIds.Count > 0)
+                            {
+                                translation = translation.Add(new XYZ(distance, 0, 0));
+                            }
+                        }
+                    }
+
+                    transaction.Commit();
+                }
+            }
+        }
     }
 }
 

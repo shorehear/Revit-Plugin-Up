@@ -19,8 +19,13 @@ namespace ElementsCopier
 
         private Button okButton;
 
-        public SettingsWindow(List<Element> selectedElements, ElementsCopier elementsCopier)
+        List<Element> selectedElements;
+        Line selectedLine;
+
+        public SettingsWindow(List<Element> selectedElements, Line selectedLine)
         {
+            this.selectedElements = selectedElements;
+            this.selectedLine = selectedLine;
             InitializeComponent(selectedElements);
         }
 
@@ -104,7 +109,28 @@ namespace ElementsCopier
         {
             try
             {
-                MessageBox.Show("Вызов ElementsCopier + данные");
+                XYZ coordinatesPoint = XYZ.Zero;
+                double distance = 0.0;
+                int quantity = 1;
+
+                if (globalCoordinatesTextBox != null)
+                {
+                    string[] coordinates = globalCoordinatesTextBox.Text.Split(',');
+                    coordinatesPoint = new XYZ(double.Parse(coordinates[0]), double.Parse(coordinates[1]), double.Parse(coordinates[2]));
+                }
+
+                if (globalDistanceTextBox != null)
+                {
+                    distance = double.Parse(globalDistanceTextBox.Text);
+                }
+
+                if (globalQuantityTextBox != null)
+                {
+                    quantity = int.Parse(globalQuantityTextBox.Text);
+                }
+
+                ElementsCopier elementsCopier = new ElementsCopier(selectedElements, selectedLine, coordinatesPoint, distance, quantity);
+                elementsCopier.CopyElements();
             }
             catch (Exception ex)
             {

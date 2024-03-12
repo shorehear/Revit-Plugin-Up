@@ -207,9 +207,8 @@ namespace ElementsCopier
             continueSelecting = false; // флаг продолжения выбора элементов в false
             RequestElementSelection(); // обработка завершения выбора элементов
 
-            ElementsCopier elementsCopier = new ElementsCopier(selectedElements, selectedLine); 
 
-            SettingsWindow settingsWindow = new SettingsWindow(selectedElements, elementsCopier);
+            SettingsWindow settingsWindow = new SettingsWindow(selectedElements, selectedLine);
             settingsWindow.Show();
         }
     }
