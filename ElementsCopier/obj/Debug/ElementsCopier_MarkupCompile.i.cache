@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 
-21781910150
+2-1387002623
 
-6-1897428811
+6-1833487395
 151665652090
-Services\ElementsSelection.xaml;Services\SettingsWindow.xaml;
+Views\SelectionElements.xaml;Views\CopySettings.xaml;
 
 False
 

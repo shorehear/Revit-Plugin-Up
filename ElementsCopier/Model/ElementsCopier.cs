@@ -7,78 +7,77 @@ namespace ElementsCopier
     {
         private List<Element> selectedElements;
         private Line selectedLine;
-
         private Document doc;
+
 
         private XYZ coordinatesPoint;
         private double distance;
         private int quantity;
 
-        public ElementsCopier(List<Element> selectedElements, XYZ coordinatesPoint, double distance, int quantity)
+        public ElementsCopier(List<Element> selectedElements, Line selectedLine, XYZ coordinatesPoint, double distance, int quantity, Document doc)
         {
-            selectedLine = null;
             this.selectedElements = selectedElements;
-            this.coordinatesPoint = coordinatesPoint;
-            this.distance = distance;
-            this.quantity = quantity;
-        }
-
-
-        public ElementsCopier(List<Element> selectedElements, Line selectedLine, XYZ coordinatesPoint, double distance, int quantity)
-        {
             this.selectedLine = selectedLine;
-            this.selectedElements = selectedElements;
             this.coordinatesPoint = coordinatesPoint;
             this.distance = distance;
             this.quantity = quantity;
+            this.doc = doc;
         }
 
         public void CopyElements()
         {
-            if (selectedElements != null)
+            if (selectedElements != null && selectedElements.Count > 0 )
             {
                 Transaction transaction = new Transaction(doc, "Копирование элементов");
                 if (transaction.Start() == TransactionStatus.Started)
                 {
-                    XYZ translation = new XYZ(distance, 0, 0);
-
-                    if (selectedLine != null)
+                    foreach (Element selectedElement in selectedElements)
                     {
-                        double rotationAngle = GetRotationAngle(selectedElements.First(), selectedLine);
+                        XYZ translation = coordinatesPoint;
 
-                        foreach (Element selectedElement in selectedElements)
+                        double rotationAngle = GetRotationAngle(selectedElement, selectedLine);
+
+                        for (int i = 0; i < quantity; i++)
                         {
                             ICollection<ElementId> newElementIds = ElementTransformUtils.CopyElement(doc, selectedElement.Id, translation);
 
-                            if (newElementIds.Count > 0)
+                            foreach (ElementId newElementId in newElementIds)
                             {
-                                Element newElement = doc.GetElement(newElementIds.First());
-                                ElementTransformUtils.RotateElement(doc, newElement.Id, Line.CreateBound(new XYZ(0, 0, 0), XYZ.BasisZ), rotationAngle);
-
-                                translation = translation.Add(new XYZ(distance, 0, 0));
+                                Element newElement = doc.GetElement(newElementId);
+                                if (newElement != null)
+                                {
+                                    ElementTransformUtils.RotateElement(doc, newElement.Id, Line.CreateBound(new XYZ(0, 0, 0), XYZ.BasisZ), rotationAngle);
+                                }
                             }
                         }
                     }
-                    else
-                    {
-                        foreach (Element selectedElement in selectedElements)
-                        {
-                            ICollection<ElementId> newElementIds = ElementTransformUtils.CopyElement(doc, selectedElement.Id, translation);
-
-                            if (newElementIds.Count > 0)
-                            {
-                                translation = translation.Add(new XYZ(distance, 0, 0));
-                            }
-                        }
-                    }
-
                     transaction.Commit();
                 }
             }
         }
+
+        private double GetRotationAngle(Element selectedElement, Line selectedLine)
+        {
+            LocationCurve locationCurve = selectedElement.Location as LocationCurve;
+            if (locationCurve != null)
+            {
+                Curve elementCurve = locationCurve.Curve;
+                XYZ elementDirection = (elementCurve.GetEndPoint(1) - elementCurve.GetEndPoint(0)).Normalize();
+
+                XYZ lineDirection = (selectedLine.GetEndPoint(1) - selectedLine.GetEndPoint(0)).Normalize();
+
+                double angle = elementDirection.AngleTo(lineDirection);
+
+                return angle;
+            }
+
+            return 0.0;
+        }
+
+
     }
 }
-
+        
 
 /*
         public void CopyElements()
