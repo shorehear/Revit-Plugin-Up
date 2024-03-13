@@ -25,14 +25,9 @@ namespace ElementsCopier
         private Button endSelecting;
 
         private bool continueSelecting = true;
-        private bool settingsWindowBeenOpen = false;
-
         private string status;
 
         public event PropertyChangedEventHandler PropertyChanged;
-
-        public event EventHandler<Object[]> SettingsClosedWithSettings;
-
         public string Status
         {
             get { return status; }
@@ -146,11 +141,6 @@ namespace ElementsCopier
 
         private void RequestElementSelection()
         {
-            if (!continueSelecting || settingsWindowBeenOpen)
-            {
-                return;
-            }
-
             Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
             if (pickedRef != null)
             {
@@ -183,13 +173,9 @@ namespace ElementsCopier
                 }
 
                 HandleElementSelection();
-            }
-            else
-            {
-                return;
+
             }
         }
-
 
 
         private void SelectionWindow_Loaded(object sender, RoutedEventArgs e)
@@ -209,21 +195,9 @@ namespace ElementsCopier
         {
             continueSelecting = false;
             RequestElementSelection();
-            
-            Hide();
-            
-            settingsWindowBeenOpen = true;
+
             SettingsWindow settingsWindow = new SettingsWindow(selectedElements, selectedLine, doc);
-            settingsWindow.SettingsClosed += SettingsWindow_SettingsClosedWithSettings;
             settingsWindow.Show();
-        }
-
-        private void SettingsWindow_SettingsClosedWithSettings(object sender, Object[] settings)
-        {
-            settingsWindowBeenOpen = true;
-
-            SettingsClosedWithSettings?.Invoke(this, settings);
-            Close();
         }
     }
 }

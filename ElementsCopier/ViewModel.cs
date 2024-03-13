@@ -14,6 +14,7 @@ namespace ElementsCopier
         Line selectedLine = null;
         Document doc = null;
 
+
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             try
@@ -24,7 +25,7 @@ namespace ElementsCopier
 
                 SelectionWindow selectElementsWindow = new SelectionWindow(doc, uidoc, selectedElements);
                 selectElementsWindow.Show();
-                selectElementsWindow.SettingsClosedWithSettings += SelectionWindow_SettingsClosedWithSettings; //окно выбора отдаст значения на парсинг как только окно настроек закроется
+                //окно выбора отдаст значения на парсинг как только окно настроек закроется
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {

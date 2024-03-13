@@ -108,8 +108,6 @@ namespace ElementsCopier
             scrollViewer.Content = stackPanel;
             Content = scrollViewer;
         }
-
-
         private void OkButton_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -155,4 +153,5 @@ namespace ElementsCopier
             }
         }
     }
+
 }
