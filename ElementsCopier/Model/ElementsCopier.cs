@@ -73,8 +73,6 @@ namespace ElementsCopier
 
             return 0.0;
         }
-
-
     }
 }
         

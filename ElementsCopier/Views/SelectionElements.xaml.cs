@@ -24,7 +24,9 @@ namespace ElementsCopier
         private System.Windows.Controls.TextBox selectedElementsTextBox;
         private Button endSelecting;
 
-        bool continueSelecting;
+        private bool continueSelecting = true;
+        private bool settingsWindowBeenOpen = false;
+
         private string status;
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -49,8 +51,6 @@ namespace ElementsCopier
             this.doc = doc;
             this.uidoc = uidoc;
             this.selectedElements = selectedElements;
-
-            InitializeComponent();
 
             Loaded += SelectionWindow_Loaded;
         }
@@ -102,7 +102,6 @@ namespace ElementsCopier
 
             Content = panel;
             UpdateSelectedElementsTextBox();
-
         }
 
         protected void OnPropertyChanged(string propertyName)
@@ -140,17 +139,18 @@ namespace ElementsCopier
             ElementSelectionEvent?.Invoke(this, selectedElement);
         }
 
-        public void HandleElementSelection()
+        private void HandleElementSelection()
         {
-            continueSelecting = true;
-            while (continueSelecting)
-            {
-                RequestElementSelection();
-            }
+            RequestElementSelection();
         }
 
         private void RequestElementSelection()
         {
+            if (!continueSelecting || settingsWindowBeenOpen)
+            {
+                return;
+            }
+
             Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
             if (pickedRef != null)
             {
@@ -181,28 +181,47 @@ namespace ElementsCopier
                         MessageBox.Show("Этот элемент уже выбран!", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
                     }
                 }
+
+                HandleElementSelection();
             }
             else
             {
-                continueSelecting = false;
+                return;
             }
         }
 
+
+
         private void SelectionWindow_Loaded(object sender, RoutedEventArgs e)
         {
-            HandleElementSelection();
+            try
+            {
+                InitializeComponent();
+                HandleElementSelection();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Произошла ошибка при загрузке окна: {ex.Message}", "Ошибка", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void endSelecting_Click(object sender, RoutedEventArgs e)
         {
-            continueSelecting = false; // Stop selecting elements
-            SettingsWindow settingsWindow = new SettingsWindow(selectedElements, selectedLine);
+            continueSelecting = false;
+            RequestElementSelection();
+            
+            Hide();
+            
+            settingsWindowBeenOpen = true;
+            SettingsWindow settingsWindow = new SettingsWindow(selectedElements, selectedLine, doc);
             settingsWindow.SettingsClosed += SettingsWindow_SettingsClosedWithSettings;
             settingsWindow.Show();
         }
 
         private void SettingsWindow_SettingsClosedWithSettings(object sender, Object[] settings)
         {
+            settingsWindowBeenOpen = true;
+
             SettingsClosedWithSettings?.Invoke(this, settings);
             Close();
         }

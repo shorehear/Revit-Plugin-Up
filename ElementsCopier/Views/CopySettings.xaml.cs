@@ -19,13 +19,15 @@ namespace ElementsCopier
 
         private Button okButton;
 
+        private Document doc;
         private List<Element> selectedElements;
         private Line selectedLine;
 
         public event EventHandler<Object[]> SettingsClosed;
 
-        public SettingsWindow(List<Element> selectedElements, Line selectedLine)
+        public SettingsWindow(List<Element> selectedElements, Line selectedLine, Document doc)
         {
+            this.doc = doc;
             this.selectedElements = selectedElements;
             this.selectedLine = selectedLine;
             InitializeComponent(selectedElements);
@@ -138,7 +140,7 @@ namespace ElementsCopier
 
                 int quantity = string.IsNullOrWhiteSpace(globalQuantityTextBox.Text) ? 1 : int.Parse(globalQuantityTextBox.Text);
 
-                Object[] settings = new Object[] { selectedElements, selectedLine, coordinatesPoint, distance, quantity };
+                Object[] settings = new Object[] { selectedElements, selectedLine, coordinatesPoint, distance, quantity, doc };
                 SettingsClosed?.Invoke(this, settings);
 
                 Close(); 

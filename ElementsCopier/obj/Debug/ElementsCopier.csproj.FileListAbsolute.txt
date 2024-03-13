@@ -11,3 +11,6 @@ C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\Elements
 C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\ElementsCopier.csproj.CoreCompileInputs.cache
 C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\ElementsCopier.dll
 C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\ElementsCopier.pdb
+C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\bin\Debug\Revit.Async.dll
+C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\bin\Debug\Revit.Async.xml
+C:\Users\abyankina\source\repos\ElementsCopier\ElementsCopier\obj\Debug\ElementsCopier.csproj.CopyComplete
