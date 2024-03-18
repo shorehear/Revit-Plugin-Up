@@ -6,7 +6,7 @@ using System.Windows.Input;
 using System;
 using System.ComponentModel;
 using System.Threading.Tasks;
-
+//уникальность элементов проверяется не по ид так что корректно не работает, поправь
 namespace Elements_Copier
 {
     public class SelectionElementsViewModel //: INotifyPropertyChanged
