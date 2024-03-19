@@ -11,7 +11,6 @@ namespace Elements_Copier
         public UIDocument uidoc;
         public ObservableCollection<ElementId> SelectedElements { get; set; }
         public Line SelectedLine { get; set; }
-
         public SelectedElementsData(Document doc, UIDocument uidoc)
         {
             SelectedElements = new ObservableCollection<ElementId>();

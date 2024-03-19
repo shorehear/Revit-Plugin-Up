@@ -58,11 +58,18 @@
     <Compile Include="Models\SelectedElements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\SelectionElementsViewModel.cs" />
+    <Compile Include="View\CopiedElementsWindow.xaml.cs">
+      <DependentUpon>CopiedElementsWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="View\SelectionElementsWindow.xaml.cs">
       <DependentUpon>SelectionElementsWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Page Include="View\CopiedElementsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="View\SelectionElementsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

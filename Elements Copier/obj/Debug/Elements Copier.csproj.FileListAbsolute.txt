@@ -8,3 +8,5 @@ C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elemen
 C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.csproj.CoreCompileInputs.cache
 C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.dll
 C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.pdb
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\View\CopiedElementsWindow.g.cs
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\View\CopiedElementsWindow.baml
