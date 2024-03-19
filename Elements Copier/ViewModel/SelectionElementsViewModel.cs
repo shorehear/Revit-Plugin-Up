@@ -47,13 +47,9 @@ namespace Elements_Copier
         public ICommand EndSelectingCommand { get; }
         private void RequestElementSelection()
         {
-            if (!_continueSelecting)
+            try
             {
-                return;
-            }
-            else if (_continueSelecting)
-            {
-                try
+                while (_continueSelecting)
                 {
                     Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
                     if (pickedRef != null)
@@ -73,7 +69,7 @@ namespace Elements_Copier
                                 UpdateSelectedElementsText();
                             }
                         }
-                        else
+                        else if (doc.GetElement(selectedElementId).Category.Id.IntegerValue != (int)BuiltInCategory.INVALID)
                         {
                             if (!_selectedElementsData.SelectedElements.Contains(selectedElementId))
                             {
@@ -89,23 +85,24 @@ namespace Elements_Copier
                     }
                     else
                     {
-                        TaskDialog.Show("Ошибка выбора элементов", "pickedRef == null");
+                        TaskDialog.Show("Ошибка выбора элементов", "Выбранный элемент равен null.");
                     }
-                    RequestElementSelection();
-                }
-                catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-                {
-                    _continueSelecting = false;
                 }
             }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+            {
+                _continueSelecting = false;
+                RequestClose?.Invoke(this, EventArgs.Empty);
+            }
         }
+
         private void EndSelecting(object parameter)
         {
             _continueSelecting = false;
+            RequestClose?.Invoke(this, EventArgs.Empty);
             TaskDialog.Show("Успешно", "Выбор элементов завершен!");
-            RequestClose?.Invoke(this, EventArgs.Empty); 
-            RequestElementSelection();
         }
+
 
         private string _selectedElementsText;
         public string SelectedElementsText

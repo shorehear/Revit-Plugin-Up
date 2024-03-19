@@ -20,9 +20,12 @@ namespace Elements_Copier
                 Document doc = uidoc.Document;
 
                 SelectionElementsWindow selectElementsWindow = new SelectionElementsWindow(doc, uidoc);
+                selectElementsWindow.Topmost = true;
+
+                selectElementsWindow.Show();
+
                 //selectElementsWindow.Closed += SelectionWindow_Closed;
                 //selectElementsWindow.ElementSelectionEvent += HandleElementSelection;
-                selectElementsWindow.Show();
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
