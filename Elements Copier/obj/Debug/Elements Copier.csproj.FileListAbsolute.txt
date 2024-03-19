@@ -1,0 +1,10 @@
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\bin\Debug\Elements Copier.dll
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\bin\Debug\Elements Copier.pdb
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.csproj.AssemblyReference.cache
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\View\SelectionElementsWindow.baml
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\View\SelectionElementsWindow.g.cs
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier_MarkupCompile.cache
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.g.resources
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.csproj.CoreCompileInputs.cache
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.dll
+C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.pdb
