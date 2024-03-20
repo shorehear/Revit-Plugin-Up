@@ -10,3 +10,15 @@ C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elemen
 C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.pdb
 C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\View\CopiedElementsWindow.g.cs
 C:\Users\abyankina\source\repos\Elements Copier\Elements Copier\obj\Debug\View\CopiedElementsWindow.baml
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\bin\Debug\Elements Copier.dll
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\bin\Debug\Elements Copier.pdb
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\Elements Copier.csproj.AssemblyReference.cache
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\View\CopiedElementsWindow.baml
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\View\SelectionElementsWindow.baml
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\View\CopiedElementsWindow.g.cs
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\View\SelectionElementsWindow.g.cs
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\Elements Copier_MarkupCompile.cache
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\Elements Copier.g.resources
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\Elements Copier.csproj.CoreCompileInputs.cache
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\Elements Copier.dll
+C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\Elements Copier.pdb

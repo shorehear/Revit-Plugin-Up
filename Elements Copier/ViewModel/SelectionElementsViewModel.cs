@@ -45,47 +45,60 @@ namespace Elements_Copier
             }
         }
         public ICommand EndSelectingCommand { get; }
+        private Category GetElementCategory(Element element)
+        {
+            return element?.Category;
+        }
+
+        private void HandleSelectedLine(Element selectedElement)
+        {
+            if (_selectedElementsData.SelectedLine != null)
+            {
+                TaskDialog.Show("Ошибка", "Уже выбрана линия модели!");
+            }
+            else
+            {
+                _selectedElementsData.SelectedLine = ((CurveElement)selectedElement).GeometryCurve as Line;
+                ElementAdded?.Invoke(this, EventArgs.Empty);
+                UpdateSelectedElementsText();
+            }
+        }
         private void RequestElementSelection()
         {
             try
             {
                 while (_continueSelecting)
                 {
-                    Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
-                    if (pickedRef != null)
+                    using (Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element))
                     {
-                        Element selectedElement = doc.GetElement(pickedRef.ElementId);
-                        ElementId selectedElementId = pickedRef.ElementId;
+                        if (pickedRef != null)
+                        {
+                            Element selectedElement = doc.GetElement(pickedRef.ElementId);
+                            ElementId selectedElementId = pickedRef.ElementId;
+                            Category category = GetElementCategory(selectedElement);
 
-                        if (doc.GetElement(selectedElementId).Category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
-                        {
-                            if (_selectedElementsData.SelectedLine != null)
+                            if (category != null)
                             {
-                                TaskDialog.Show("Ошибка", "Уже выбрана линия модели!");
-                            }
-                            else
-                            {
-                                _selectedElementsData.SelectedLine = ((CurveElement)selectedElement).GeometryCurve as Line;
-                                UpdateSelectedElementsText();
-                            }
-                        }
-                        else if (doc.GetElement(selectedElementId).Category.Id.IntegerValue != (int)BuiltInCategory.INVALID)
-                        {
-                            if (!_selectedElementsData.SelectedElements.Contains(selectedElementId))
-                            {
-                                _selectedElementsData.SelectedElements.Add(selectedElementId);
-                                ElementAdded?.Invoke(this, EventArgs.Empty);
-                                UpdateSelectedElementsText();
-                            }
-                            else
-                            {
-                                TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
+                                if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
+                                {
+                                    HandleSelectedLine(selectedElement);
+                                    UpdateSelectedElementsText();
+                                }
+                                else if (!_selectedElementsData.SelectedElements.Contains(selectedElementId))
+                                {
+                                    _selectedElementsData.SelectedElements.Add(selectedElementId);
+                                    UpdateSelectedElementsText();
+                                }
+                                else
+                                {
+                                    TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
+                                }
                             }
                         }
-                    }
-                    else
-                    {
-                        TaskDialog.Show("Ошибка выбора элементов", "Выбранный элемент равен null.");
+                        else
+                        {
+                            TaskDialog.Show("Ошибка выбора элементов", "Выбранный элемент равен null.");
+                        }
                     }
                 }
             }
@@ -98,9 +111,9 @@ namespace Elements_Copier
 
         private void EndSelecting(object parameter)
         {
+            TaskDialog.Show("Успешно", "Выбор элементов завершен!");
             _continueSelecting = false;
             RequestClose?.Invoke(this, EventArgs.Empty);
-            TaskDialog.Show("Успешно", "Выбор элементов завершен!");
         }
 
 
@@ -114,6 +127,8 @@ namespace Elements_Copier
                 OnPropertyChanged();
             }
         }
+
+
 
         public event EventHandler ElementAdded;
         public event PropertyChangedEventHandler PropertyChanged;
@@ -138,6 +153,11 @@ namespace Elements_Copier
                 elementsListBuilder.AppendLine("\nЛиния направления выбрана");
             }
             SelectedElementsText = elementsListBuilder.ToString();
+        }
+
+        public SelectedElementsData GetSelectedElementsData()
+        {
+            return _selectedElementsData;
         }
     }
     public class RelayCommand : ICommand
@@ -165,4 +185,3 @@ namespace Elements_Copier
         }
     }
 }
-

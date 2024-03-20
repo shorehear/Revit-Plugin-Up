@@ -57,6 +57,7 @@
     <Compile Include="Models\CopiedElements.cs" />
     <Compile Include="Models\SelectedElements.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModel\CopiedElementsViewModel.cs" />
     <Compile Include="ViewModel\SelectionElementsViewModel.cs" />
     <Compile Include="View\CopiedElementsWindow.xaml.cs">
       <DependentUpon>CopiedElementsWindow.xaml</DependentUpon>

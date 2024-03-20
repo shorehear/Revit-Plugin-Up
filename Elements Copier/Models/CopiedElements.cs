@@ -4,19 +4,19 @@ using System.Collections.ObjectModel;
 
 namespace Elements_Copier
 {
-    internal class CopiedElements
+    public class CopiedElements
     {
         public Document doc;
         public UIDocument uidoc;
         public ObservableCollection<ElementId> SelectedElements { get; set; }
         public Line SelectedLine { get; set; }
-        public CopiedElements(Document doc, UIDocument uidoc)
+
+        public CopiedElements(SelectedElementsData selectedData)
         {
-            SelectedElements = new ObservableCollection<ElementId>();
-            this.doc = doc;
-            this.uidoc = uidoc;
+            doc = selectedData.doc;
+            uidoc = selectedData.uidoc;
+            SelectedElements = selectedData.SelectedElements;
+            SelectedLine = selectedData.SelectedLine;
         }
-
-
     }
 }

@@ -1,13 +1,16 @@
 ﻿using System.Windows;
-using System.Windows.Controls;
+
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Elements_Copier
 {
     public partial class CopiedElementsWindow : Window
     {
-        public CopiedElementsWindow()
+
+        public CopiedElementsWindow(SelectedElementsData selectedElementsData)
         {
             InitializeComponent();
+            DataContext = new CopiedElementsViewModel(selectedElementsData);
         }
 
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
