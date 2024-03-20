@@ -1,12 +1,15 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Text;
+using System.Threading;
+using System.Windows.Input;
+using System.ComponentModel;
+using System.Threading.Tasks;
+using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
+
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using System.Windows.Input;
-using System;
-using System.Threading.Tasks;
-using System.ComponentModel;
-using System.Text;
-using System.Runtime.CompilerServices;
+
 
 namespace Elements_Copier
 {
@@ -16,6 +19,7 @@ namespace Elements_Copier
 
         private Document doc;
         private UIDocument uidoc;
+        private CancellationTokenSource _cancellationTokenSource;
 
         private SelectedElementsData _selectedElementsData;
         private bool _continueSelecting = true;
@@ -25,12 +29,13 @@ namespace Elements_Copier
             this.uidoc = uidoc;
             _selectedElementsData = new SelectedElementsData(doc, uidoc);
             EndSelectingCommand = new RelayCommand(EndSelecting);
+            _cancellationTokenSource = new CancellationTokenSource();
             InitializeAsync();
         }
         private async void InitializeAsync()
         {
-            await Task.Delay(100);
-            RequestElementSelection();
+            await Task.Delay(10);
+            RequestElementSelection(_cancellationTokenSource.Token); 
         }
         public ObservableCollection<ElementId> SelectedElementIds
         {
@@ -49,7 +54,6 @@ namespace Elements_Copier
         {
             return element?.Category;
         }
-
         private void HandleSelectedLine(Element selectedElement)
         {
             if (_selectedElementsData.SelectedLine != null)
@@ -63,14 +67,18 @@ namespace Elements_Copier
                 UpdateSelectedElementsText();
             }
         }
-        private void RequestElementSelection()
+        private void RequestElementSelection(CancellationToken cancellationToken)
         {
             try
             {
-                while (_continueSelecting)
+                while (_continueSelecting && !cancellationToken.IsCancellationRequested)
                 {
                     using (Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element))
                     {
+                        if (!_continueSelecting || cancellationToken.IsCancellationRequested)
+                        {
+                            break;
+                        }
                         if (pickedRef != null)
                         {
                             Element selectedElement = doc.GetElement(pickedRef.ElementId);
@@ -102,7 +110,7 @@ namespace Elements_Copier
                     }
                 }
             }
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+            catch (OperationCanceledException)
             {
                 _continueSelecting = false;
                 RequestClose?.Invoke(this, EventArgs.Empty);
@@ -111,11 +119,14 @@ namespace Elements_Copier
 
         private void EndSelecting(object parameter)
         {
+            _cancellationTokenSource.Cancel();
+            ElementAdded = null;
+            PropertyChanged = null;
+
             TaskDialog.Show("Успешно", "Выбор элементов завершен!");
             _continueSelecting = false;
             RequestClose?.Invoke(this, EventArgs.Empty);
         }
-
 
         private string _selectedElementsText;
         public string SelectedElementsText
@@ -128,8 +139,6 @@ namespace Elements_Copier
             }
         }
 
-
-
         public event EventHandler ElementAdded;
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
@@ -139,7 +148,6 @@ namespace Elements_Copier
         private void UpdateSelectedElementsText()
         {
             StringBuilder elementsListBuilder = new StringBuilder();
-            elementsListBuilder.AppendLine("Элементы:");
             foreach (var elementId in _selectedElementsData.SelectedElements)
             {
                 Element element = doc.GetElement(elementId);
