@@ -1,6 +1,7 @@
 ﻿<Window x:Class="Elements_Copier.CopiedElementsWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Менеджер настроек копирования"
         Height="600" 
         Width="650">
     <StackPanel Height="550" Orientation="Horizontal">
@@ -12,7 +13,7 @@
                 Height="25" 
                 HorizontalAlignment="Left"/>
             <TextBox 
-                Text="{Binding SelectedElementsText}" 
+                Text="{Binding SelectedElementsText, Mode=OneWay}"
                 IsReadOnly="True" 
                 VerticalScrollBarVisibility="Auto" 
                 HorizontalScrollBarVisibility="Auto" 

@@ -2,10 +2,13 @@
 using Autodesk.Revit.UI;
 using System.Windows.Input;
 using System.Text;
+using System.ComponentModel;
+using System.Runtime.CompilerServices;
+
 
 namespace Elements_Copier
 {
-    public class CopiedElementsViewModel
+    public class CopiedElementsViewModel : INotifyPropertyChanged
     {
         private Document doc;
         private UIDocument uidoc;
@@ -13,14 +16,29 @@ namespace Elements_Copier
         public CopiedElements copiedElements;
         public ICommand EndSetCopySettingsCommand { get; }
 
+        private string _selectedElementsText;
+        public string SelectedElementsText
+        {
+            get { return _selectedElementsText; }
+            set
+            {
+                if (_selectedElementsText != value)
+                {
+                    _selectedElementsText = value;
+                    OnPropertyChanged();
+                }
+            }
+        }
         public CopiedElementsViewModel(SelectedElementsData SelectedElementsData)
         {
             this.SelectedElementsData = SelectedElementsData;
+
             copiedElements = new CopiedElements(SelectedElementsData);
             doc = SelectedElementsData.doc;
             uidoc = SelectedElementsData.uidoc;
-
             EndSetCopySettingsCommand = new RelayCommand(EndSetting);
+
+            SelectedElementsText = GetSelectedElementsString();
         }
         public string GetSelectedElementsString()
         {
@@ -43,9 +61,13 @@ namespace Elements_Copier
         {
             string selectedElementsInfo = GetSelectedElementsString();
             TaskDialog.Show("Выбранные элементы", selectedElementsInfo);
-
         }
+
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+        {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+        }
+
     }
-
-
 }
