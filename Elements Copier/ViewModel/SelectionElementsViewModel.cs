@@ -16,17 +16,19 @@ namespace Elements_Copier
     public class SelectionElementsViewModel : INotifyPropertyChanged
     {
         public event EventHandler RequestClose;
+        private CancellationTokenSource _cancellationTokenSource;
 
         private Document doc;
         private UIDocument uidoc;
-        private CancellationTokenSource _cancellationTokenSource;
 
         private SelectedElementsData _selectedElementsData;
         private bool _continueSelecting = true;
-        public SelectionElementsViewModel(Document doc, UIDocument uidoc)
+        private int _typeOfOperation;
+        public SelectionElementsViewModel(Document doc, UIDocument uidoc, int typeOfOperation)
         {
             this.doc = doc;
             this.uidoc = uidoc;
+            _typeOfOperation = typeOfOperation;
             _selectedElementsData = new SelectedElementsData(doc, uidoc);
             EndSelectingCommand = new RelayCommand(EndSelecting);
             _cancellationTokenSource = new CancellationTokenSource();
@@ -160,7 +162,6 @@ namespace Elements_Copier
             }
             SelectedElementsText = elementsListBuilder.ToString();
         }
-
         public SelectedElementsData GetSelectedElementsData()
         {
             return _selectedElementsData;

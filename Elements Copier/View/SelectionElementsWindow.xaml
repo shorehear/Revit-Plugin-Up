@@ -4,39 +4,21 @@
         Title="Менеджер выбора элементов" 
         Height="600" 
         Width="650">
+
     <StackPanel Height="550">
 
         <RadioButton Content="Выбрать объекты кликом по каждому" GroupName="Options" Margin="70,0,0,0"/>
         <RadioButton Content="Выбрать область с объектами" GroupName="Options" Margin="70,0,0,0"/>
-
-
-        <CheckBox
-            Content="Выбрать направляющую линию модели"
-            Margin="70,10,0,0"
-            />
-        <Label 
-            Content="Выбранные элементы:" 
-            Margin="70,20,0,0" 
-            Width="135" 
-            Height="25" 
-            HorizontalAlignment="Left"
-            />
-        <TextBox 
-            Text="{Binding SelectedElementsText}" 
-            IsReadOnly="True" 
-            VerticalScrollBarVisibility="Auto" 
-            HorizontalScrollBarVisibility="Auto" 
-            Width="500" 
-            Height="392"
-            />
-        <Button 
-            Content="Необходимые элементы выбраны" 
-            Width="200" 
-            Height="20"
-            Command="{Binding EndSelectingCommand}" 
-            VerticalContentAlignment="Stretch" 
-            Margin="0,15,0,5" 
-            />
         
+        <CheckBox Content="Выбрать направляющую линию модели" Margin="70,10,0,0"/>
+        
+        <Label Content="Выбранные элементы:" Margin="70,20,0,0" Width="135" Height="25" HorizontalAlignment="Left" />
+        
+        <TextBox Text="{Binding SelectedElementsText}" IsReadOnly="True" VerticalScrollBarVisibility="Auto" 
+                 HorizontalScrollBarVisibility="Auto" Width="500" Height="392"/>
+        
+        <Button Content="Необходимые элементы выбраны" Width="200" Height="20" Command="{Binding EndSelectingCommand}" 
+                VerticalContentAlignment="Stretch" Margin="0,15,0,5"/>
+
     </StackPanel>
 </Window>

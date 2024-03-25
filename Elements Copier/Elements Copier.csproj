@@ -59,11 +59,18 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModel\CopiedElementsViewModel.cs" />
     <Compile Include="ViewModel\SelectionElementsViewModel.cs" />
+    <Compile Include="ViewModel\StartWindowViewModel.cs">
+      <Generator>MSBuild:Compile</Generator>
+    </Compile>
+    <Compile Include="ViewModel\ViewModelBase.cs" />
     <Compile Include="View\CopiedElementsWindow.xaml.cs">
       <DependentUpon>CopiedElementsWindow.xaml</DependentUpon>
     </Compile>
     <Compile Include="View\SelectionElementsWindow.xaml.cs">
       <DependentUpon>SelectionElementsWindow.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="View\StartWindow.xaml.cs">
+      <DependentUpon>StartWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -72,6 +79,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="View\SelectionElementsWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="View\StartWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -18,11 +18,13 @@ namespace Elements_Copier
                 UIDocument uidoc = uiapp.ActiveUIDocument;
                 Document doc = uidoc.Document;
 
-                SelectionElementsWindow selectElementsWindow = new SelectionElementsWindow(doc, uidoc);
-                selectElementsWindow.Topmost = true;
+                //SelectionElementsWindow selectElementsWindow = new SelectionElementsWindow(doc, uidoc);
+                //selectElementsWindow.Topmost = true;
 
-                selectElementsWindow.Show();
-
+                //selectElementsWindow.Show();
+                StartWindow startWindow = new StartWindow(doc, uidoc);
+                startWindow.Topmost = true;
+                startWindow.Show();
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
