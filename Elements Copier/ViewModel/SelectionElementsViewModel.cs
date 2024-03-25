@@ -1,11 +1,14 @@
 ﻿using System;
 using System.Text;
+using System.Windows;
 using System.Threading;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Threading.Tasks;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
+using System.Collections.Generic;
+
 
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
@@ -16,116 +19,274 @@ namespace Elements_Copier
     public class SelectionElementsViewModel : INotifyPropertyChanged
     {
         public event EventHandler RequestClose;
-        private CancellationTokenSource _cancellationTokenSource;
 
         private Document doc;
         private UIDocument uidoc;
+        private int typeOfOperation;
 
-        private SelectedElementsData _selectedElementsData;
-        private bool _continueSelecting = true;
-        private int _typeOfOperation;
+        private SelectedElementsData selectedElementsData;
+        private bool continueSelecting;
+        
+        public ICommand StartSelectionCommand { get; }
+        public ICommand EndSelectionCommand { get; }
+
         public SelectionElementsViewModel(Document doc, UIDocument uidoc, int typeOfOperation)
         {
             this.doc = doc;
             this.uidoc = uidoc;
-            _typeOfOperation = typeOfOperation;
-            _selectedElementsData = new SelectedElementsData(doc, uidoc);
-            EndSelectingCommand = new RelayCommand(EndSelecting);
-            _cancellationTokenSource = new CancellationTokenSource();
-            InitializeAsync();
+            this.typeOfOperation = typeOfOperation; //1-2 выбор элементов по клику без линии/с линией, 3-4 выбор элементов по области без линии/с линией
+
+
+            selectedElementsData = new SelectedElementsData(doc, uidoc);
+
+            StartSelectionCommand = new RelayCommand(StartSelection);
+            EndSelectionCommand = new RelayCommand(EndSelecting);
         }
-        private async void InitializeAsync()
+
+        private void StartSelection(object parameter)
         {
-            await Task.Delay(10);
-            RequestElementSelection(_cancellationTokenSource.Token); 
+            continueSelecting = true;
+            RequestElementSelection(typeOfOperation);
         }
-        public ObservableCollection<ElementId> SelectedElementIds
-        {
-            get { return _selectedElementsData.SelectedElements; }
-        }
-        public Line SelectedLine
-        {
-            get { return _selectedElementsData.SelectedLine; }
-            set
-            {
-                _selectedElementsData.SelectedLine = value;
-            }
-        }
-        public ICommand EndSelectingCommand { get; }
+
         private Category GetElementCategory(Element element)
         {
             return element?.Category;
         }
         private void HandleSelectedLine(Element selectedElement)
         {
-            if (_selectedElementsData.SelectedLine != null)
+            if (typeOfOperation == 2 || typeOfOperation == 3)
             {
-                TaskDialog.Show("Ошибка", "Уже выбрана линия модели!");
+                if (selectedElementsData.SelectedLine != null)
+                {
+                    TaskDialog.Show("Ошибка", "Уже выбрана линия модели!");
+                }
+                else
+                {
+                    selectedElementsData.SelectedLine = ((CurveElement)selectedElement).GeometryCurve as Line;
+                    ElementAdded?.Invoke(this, EventArgs.Empty);
+                    UpdateSelectedElementsText();
+                }
             }
             else
             {
-                _selectedElementsData.SelectedLine = ((CurveElement)selectedElement).GeometryCurve as Line;
-                ElementAdded?.Invoke(this, EventArgs.Empty);
-                UpdateSelectedElementsText();
+                return;
             }
         }
-        private void RequestElementSelection(CancellationToken cancellationToken)
-        {
-            try
-            {
-                while (_continueSelecting && !cancellationToken.IsCancellationRequested)
-                {
-                    using (Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element))
-                    {
-                        if (!_continueSelecting || cancellationToken.IsCancellationRequested)
-                        {
-                            break;
-                        }
-                        if (pickedRef != null)
-                        {
-                            Element selectedElement = doc.GetElement(pickedRef.ElementId);
-                            ElementId selectedElementId = pickedRef.ElementId;
-                            Category category = GetElementCategory(selectedElement);
 
-                            if (category != null)
+        private void RequestElementSelection(int typeOfOperation)
+        {
+            switch (typeOfOperation)
+            {
+                case 1: //алгоритм работы, если операция "выбор элементов по клику, без линии"
+                    try
+                    {
+                        while (continueSelecting)
+                        {
+                            using (Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element))
                             {
-                                if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
+                                if (pickedRef != null)
                                 {
-                                    HandleSelectedLine(selectedElement);
-                                    UpdateSelectedElementsText();
-                                }
-                                else if (!_selectedElementsData.SelectedElements.Contains(selectedElementId))
-                                {
-                                    _selectedElementsData.SelectedElements.Add(selectedElementId);
-                                    UpdateSelectedElementsText();
-                                }
-                                else
-                                {
-                                    TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
+                                    Element selectedElement = doc.GetElement(pickedRef.ElementId);
+                                    ElementId selectedElementId = pickedRef.ElementId;
+                                    Category category = GetElementCategory(selectedElement);
+
+                                    if (category != null)
+                                    {
+                                        if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
+                                        {
+                                            TaskDialog.Show("Ошибка", "В текущем режиме не определен выбор направляющей линии");
+                                            return;
+                                        }
+                                        else if (!selectedElementsData.SelectedElements.Contains(selectedElementId))
+                                        {
+                                            selectedElementsData.SelectedElements.Add(selectedElementId);
+                                            UpdateSelectedElementsText();
+                                        }
+                                        else
+                                        {
+                                            TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        TaskDialog.Show("Ошибка", "Ошибка выбора элементов. Выбранный элемент равен null");
+                                    }
                                 }
                             }
                         }
-                        else
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        continueSelecting = false;
+                        RequestClose?.Invoke(this, EventArgs.Empty);
+                    }
+                    break;
+                case 2: //алгоритм работы, если операция "выбор элементов по клику, с линией"
+                    try
+                    {
+                        while (continueSelecting)
                         {
-                            TaskDialog.Show("Ошибка выбора элементов", "Выбранный элемент равен null.");
+                            using (Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element))
+                            {
+                                if (pickedRef != null)
+                                {
+                                    Element selectedElement = doc.GetElement(pickedRef.ElementId);
+                                    ElementId selectedElementId = pickedRef.ElementId;
+                                    Category category = GetElementCategory(selectedElement);
+
+                                    if (category != null)
+                                    {
+                                        if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
+                                        {
+                                            HandleSelectedLine(selectedElement);
+                                            UpdateSelectedElementsText();
+                                        }
+                                        else if (!selectedElementsData.SelectedElements.Contains(selectedElementId))
+                                        {
+                                            selectedElementsData.SelectedElements.Add(selectedElementId);
+                                            UpdateSelectedElementsText();
+                                        }
+                                        else
+                                        {
+                                            TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
+                                        }
+                                    }
+                                    else
+                                    {
+                                        TaskDialog.Show("Ошибка", "Ошибка выбора элементов. Выбранный элемент равен null");
+                                    }
+                                }
+                            }
                         }
                     }
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                _continueSelecting = false;
-                RequestClose?.Invoke(this, EventArgs.Empty);
+                    catch (OperationCanceledException)
+                    {
+                        continueSelecting = false;
+                        RequestClose?.Invoke(this, EventArgs.Empty);
+                    }
+                    break;
+                case 3: // алгоритм работы, если операция "выбор элементов по области, без линии"
+                    try
+                    {
+                        while (continueSelecting)
+                        {
+                            ICollection<Reference> pickedRefs = uidoc.Selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element);
+
+                            if (pickedRefs != null && pickedRefs.Count > 0)
+                            {
+                                foreach (Reference pickedRef in pickedRefs)
+                                {
+                                    ElementId elementId = pickedRef.ElementId;
+                                    Element selectedElement = uidoc.Document.GetElement(elementId);
+                                    Category category = GetElementCategory(selectedElement);
+
+                                    if (category != null)
+                                    {
+                                        if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
+                                        {
+                                            TaskDialog.Show("Ошибка", "В текущем режиме не определен выбор направляющей линии");
+                                            return;
+                                        }
+                                        else if (!selectedElementsData.SelectedElements.Contains(elementId))
+                                        {
+                                            selectedElementsData.SelectedElements.Add(elementId);
+                                            UpdateSelectedElementsText();
+                                        }
+                                        else
+                                        {
+                                            TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                continueSelecting = false;
+                                break;
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        continueSelecting = false;
+                        RequestClose?.Invoke(this, EventArgs.Empty);
+                    }
+                    break;
+                case 4:
+                    try
+                    {
+                        while (continueSelecting)
+                        {
+                            ICollection<Reference> pickedRefs = uidoc.Selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element);
+
+                            if (pickedRefs != null && pickedRefs.Count > 0)
+                            {
+                                foreach (Reference pickedRef in pickedRefs)
+                                {
+                                    ElementId elementId = pickedRef.ElementId;
+                                    Element selectedElement = uidoc.Document.GetElement(elementId);
+                                    Category category = GetElementCategory(selectedElement);
+
+                                    if (category != null)
+                                    {
+                                        if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
+                                        {
+                                            HandleSelectedLine(selectedElement);
+                                            UpdateSelectedElementsText();
+                                            return;
+                                        }
+                                        else if (!selectedElementsData.SelectedElements.Contains(elementId))
+                                        {
+                                            selectedElementsData.SelectedElements.Add(elementId);
+                                            UpdateSelectedElementsText();
+                                        }
+                                        else
+                                        {
+                                            TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                continueSelecting = false;
+                                break;
+                            }
+                        }
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        continueSelecting = false;
+                        RequestClose?.Invoke(this, EventArgs.Empty);
+                    }
+                    break;
+                default:
+                    TaskDialog.Show("Ошибка", "Некорректно инициализирован тип операции");
+                    break;
             }
         }
 
         private void EndSelecting(object parameter)
         {
-            _cancellationTokenSource.Cancel();
-
+            //обработать закрытие окна
+            if ((typeOfOperation == 2 || typeOfOperation == 4) && selectedElementsData.SelectedLine == null)
+            {
+                TaskDialog.Show("Ошибка", "Не выбрана линия направления");
+                return;
+            }
+            if ((typeOfOperation == 1 || typeOfOperation == 3) && selectedElementsData.SelectedLine != null)
+            {
+                TaskDialog.Show("Ошибка", "Была проинициализирована линия");
+                return;
+            }
+            if (selectedElementsData.SelectedElements == null)
+            {
+                TaskDialog.Show("Ошибка", "Не были выбраны элементы");
+                return;
+            }
+            continueSelecting = false;
             TaskDialog.Show("Успешно", "Выбор элементов завершен!");
-            _continueSelecting = false;
-            RequestClose?.Invoke(this, EventArgs.Empty);
         }
 
         private string _selectedElementsText;
@@ -148,7 +309,7 @@ namespace Elements_Copier
         private void UpdateSelectedElementsText()
         {
             StringBuilder elementsListBuilder = new StringBuilder();
-            foreach (var elementId in _selectedElementsData.SelectedElements)
+            foreach (var elementId in selectedElementsData.SelectedElements)
             {
                 Element element = doc.GetElement(elementId);
                 if (element != null)
@@ -156,7 +317,7 @@ namespace Elements_Copier
                     elementsListBuilder.AppendLine($"{element.Name} {element.Id}");
                 }
             }
-            if (_selectedElementsData.SelectedLine != null)
+            if (selectedElementsData.SelectedLine != null)
             {
                 elementsListBuilder.AppendLine("\nЛиния направления выбрана");
             }
@@ -164,7 +325,7 @@ namespace Elements_Copier
         }
         public SelectedElementsData GetSelectedElementsData()
         {
-            return _selectedElementsData;
+            return selectedElementsData;
         }
     }
     public class RelayCommand : ICommand
