@@ -26,7 +26,8 @@ namespace Elements_Copier
 
         private SelectedElementsData selectedElementsData;
         private bool continueSelecting;
-        
+        private bool endSelectingRequested = false;
+
         public ICommand StartSelectionCommand { get; }
         public ICommand EndSelectionCommand { get; }
 
@@ -74,18 +75,44 @@ namespace Elements_Copier
             }
         }
 
+        private void EndSelecting(object parameter)
+        {
+            endSelectingRequested = true;
+            continueSelecting = false;
+
+            //обработать закрытие окна
+            if ((typeOfOperation == 2 || typeOfOperation == 4) && selectedElementsData.SelectedLine == null)
+            {
+                TaskDialog.Show("Ошибка", "Не выбрана линия направления");
+                return;
+            }
+            if ((typeOfOperation == 1 || typeOfOperation == 3) && selectedElementsData.SelectedLine != null)
+            {
+                TaskDialog.Show("Ошибка", "Была проинициализирована линия");
+                return;
+            }
+            if (selectedElementsData.SelectedElements == null)
+            {
+                TaskDialog.Show("Ошибка", "Не были выбраны элементы");
+                return;
+            }
+            TaskDialog.Show("Успешно", "Выбор элементов завершен!");
+        }
+
         private void RequestElementSelection(int typeOfOperation)
         {
             switch (typeOfOperation)
             {
-                case 1: //алгоритм работы, если операция "выбор элементов по клику, без линии"
+                case 1: // алгоритм работы, если операция "выбор элементов по клику, без линии"
                     try
                     {
-                        while (continueSelecting)
+                        while (true)
                         {
-                            using (Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element))
+                            if (continueSelecting)
                             {
-                                if (pickedRef != null)
+                                Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element);
+
+                                if (pickedRef != null && continueSelecting)
                                 {
                                     Element selectedElement = doc.GetElement(pickedRef.ElementId);
                                     ElementId selectedElementId = pickedRef.ElementId;
@@ -96,7 +123,7 @@ namespace Elements_Copier
                                         if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
                                         {
                                             TaskDialog.Show("Ошибка", "В текущем режиме не определен выбор направляющей линии");
-                                            return;
+                                            continue;
                                         }
                                         else if (!selectedElementsData.SelectedElements.Contains(selectedElementId))
                                         {
@@ -108,11 +135,11 @@ namespace Elements_Copier
                                             TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
                                         }
                                     }
-                                    else
-                                    {
-                                        TaskDialog.Show("Ошибка", "Ошибка выбора элементов. Выбранный элемент равен null");
-                                    }
                                 }
+                            }
+                            else
+                            {
+                                break;
                             }
                         }
                     }
@@ -125,11 +152,12 @@ namespace Elements_Copier
                 case 2: //алгоритм работы, если операция "выбор элементов по клику, с линией"
                     try
                     {
-                        while (continueSelecting)
+                        while (true)
                         {
+                            if (!continueSelecting) { break; }
                             using (Reference pickedRef = uidoc.Selection.PickObject(Autodesk.Revit.UI.Selection.ObjectType.Element))
                             {
-                                if (pickedRef != null)
+                                if (pickedRef != null && continueSelecting)
                                 {
                                     Element selectedElement = doc.GetElement(pickedRef.ElementId);
                                     ElementId selectedElementId = pickedRef.ElementId;
@@ -171,9 +199,10 @@ namespace Elements_Copier
                     {
                         while (continueSelecting)
                         {
+                            if (!continueSelecting) { break; }
                             ICollection<Reference> pickedRefs = uidoc.Selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element);
 
-                            if (pickedRefs != null && pickedRefs.Count > 0)
+                            if (pickedRefs != null && pickedRefs.Count > 0 && continueSelecting)
                             {
                                 foreach (Reference pickedRef in pickedRefs)
                                 {
@@ -218,9 +247,10 @@ namespace Elements_Copier
                     {
                         while (continueSelecting)
                         {
+                            if (!continueSelecting) { break; }
                             ICollection<Reference> pickedRefs = uidoc.Selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element);
 
-                            if (pickedRefs != null && pickedRefs.Count > 0)
+                            if (pickedRefs != null && pickedRefs.Count > 0 && continueSelecting)
                             {
                                 foreach (Reference pickedRef in pickedRefs)
                                 {
@@ -267,28 +297,7 @@ namespace Elements_Copier
             }
         }
 
-        private void EndSelecting(object parameter)
-        {
-            //обработать закрытие окна
-            if ((typeOfOperation == 2 || typeOfOperation == 4) && selectedElementsData.SelectedLine == null)
-            {
-                TaskDialog.Show("Ошибка", "Не выбрана линия направления");
-                return;
-            }
-            if ((typeOfOperation == 1 || typeOfOperation == 3) && selectedElementsData.SelectedLine != null)
-            {
-                TaskDialog.Show("Ошибка", "Была проинициализирована линия");
-                return;
-            }
-            if (selectedElementsData.SelectedElements == null)
-            {
-                TaskDialog.Show("Ошибка", "Не были выбраны элементы");
-                return;
-            }
-            continueSelecting = false;
-            TaskDialog.Show("Успешно", "Выбор элементов завершен!");
-        }
-
+        
         private string _selectedElementsText;
         public string SelectedElementsText
         {
