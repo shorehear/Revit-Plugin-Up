@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using Autodesk.Revit.UI;
 using System;
 
-
 namespace Elements_Copier
 {
     [Transaction(TransactionMode.Manual)]
@@ -24,8 +23,6 @@ namespace Elements_Copier
 
                 selectElementsWindow.Show();
 
-                //selectElementsWindow.Closed += SelectionWindow_Closed;
-                //selectElementsWindow.ElementSelectionEvent += HandleElementSelection;
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {

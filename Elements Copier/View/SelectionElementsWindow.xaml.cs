@@ -19,7 +19,7 @@ namespace Elements_Copier
         private void CloseWindow(object sender, EventArgs e)
         {
             _viewModel.RequestClose -= CloseWindow;
-
+            
             Close();
             var selectedElementsData = _viewModel.GetSelectedElementsData();
             var copiedElementsWindow = new CopiedElementsWindow(selectedElementsData);

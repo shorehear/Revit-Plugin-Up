@@ -120,8 +120,6 @@ namespace Elements_Copier
         private void EndSelecting(object parameter)
         {
             _cancellationTokenSource.Cancel();
-            ElementAdded = null;
-            PropertyChanged = null;
 
             TaskDialog.Show("Успешно", "Выбор элементов завершен!");
             _continueSelecting = false;

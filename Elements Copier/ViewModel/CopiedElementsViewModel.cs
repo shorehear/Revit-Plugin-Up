@@ -57,8 +57,19 @@ namespace Elements_Copier
             }
             return elementsListBuilder.ToString();
         }
+        public string CoordinatesTextBoxText { get; set; }
+        public string NumberOfCopiesTextBoxText { get; set; }
+        public string DistanceBetweenCopiesTextBoxText { get; set; }
+
         private void EndSetting(object parameter)
         {
+            string[] coordinates = CoordinatesTextBoxText.Split(',');
+            XYZ coordinatesPoint = new XYZ(double.Parse(coordinates[0]), double.Parse(coordinates[1]), double.Parse(coordinates[2]));
+            copiedElements.CoordinatesToCopy = coordinatesPoint;
+            int numberOfCopies = int.Parse(NumberOfCopiesTextBoxText);
+            copiedElements.AmountOfCopies = numberOfCopies;
+            double distanceBetweenCopies = double.Parse(DistanceBetweenCopiesTextBoxText);
+            copiedElements.DistanceBetweenElements = distanceBetweenCopies;
             string selectedElementsInfo = GetSelectedElementsString();
             TaskDialog.Show("Выбранные элементы", selectedElementsInfo);
         }
