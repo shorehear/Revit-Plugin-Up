@@ -26,7 +26,6 @@ namespace Elements_Copier
 
         private SelectedElementsData selectedElementsData;
         private bool continueSelecting;
-        private bool endSelectingRequested = false;
 
         public ICommand StartSelectionCommand { get; }
         public ICommand EndSelectionCommand { get; }
@@ -40,14 +39,23 @@ namespace Elements_Copier
 
             selectedElementsData = new SelectedElementsData(doc, uidoc);
 
-            StartSelectionCommand = new RelayCommand(StartSelection);
             EndSelectionCommand = new RelayCommand(EndSelecting);
+
+            InitializeAsync();
         }
 
-        private void StartSelection(object parameter)
+        private async void InitializeAsync()
         {
-            continueSelecting = true;
-            RequestElementSelection(typeOfOperation);
+            await Task.Delay(1);
+            if (typeOfOperation != 0)
+            {
+                continueSelecting = true;
+                RequestElementSelection(typeOfOperation);
+            }
+            else
+            {
+                TaskDialog.Show("Ошибка", "Тип операции");
+            }
         }
 
         private Category GetElementCategory(Element element)
@@ -77,7 +85,6 @@ namespace Elements_Copier
 
         private void EndSelecting(object parameter)
         {
-            endSelectingRequested = true;
             continueSelecting = false;
 
             //обработать закрытие окна
@@ -276,6 +283,7 @@ namespace Elements_Copier
                                             TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
                                         }
                                     }
+                                    UpdateSelectedElementsText();
                                 }
                             }
                             else
