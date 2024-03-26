@@ -2,18 +2,19 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Менеджер выбора элементов" 
-        Height="225" 
-        Width="300">
-    
-    <StackPanel Height="200">
+        Height="215" 
+        Width="400">
+
+    <StackPanel>
 
         <RadioButton Content="Выбрать объекты кликом по каждому" GroupName="Options" Margin="10,10,0,0" Command="{Binding GetSingleSelectionCommand}"/>
         <RadioButton Content="Выбрать область с объектами" GroupName="Options" Margin="10,0,0,0" Command ="{Binding GetGroupSelectionCommand}"/>
 
         <CheckBox Content="Выбрать направляющую линию модели" Margin="10,10,0,0" IsChecked="{Binding IncludeLineSelection, Mode=TwoWay}" />
 
-        <Label Content="Сюда добавить справку пользования" Margin="40,10,0,0"/>
-
-        <Button Content="Приступить к выбору элементов" Margin="40,50,40,0" Command="{Binding GetSelectionCommand}" />
+        <TextBlock Text="При выборе направляющей линии появится возможность вращения объектов относительно этой линии, перемещения копий объектов в точку начала линии."
+           TextWrapping="Wrap" Margin="0,20,0,0" Height="55" Width="300" FontSize="11" TextAlignment="Center"/>
+        
+        <Button Content="Приступить к выбору элементов" Command="{Binding GetSelectionCommand}" Width="200" Margin="0,10,0,0"/>
     </StackPanel>
 </Window>

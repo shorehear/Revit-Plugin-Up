@@ -14,14 +14,13 @@ namespace Elements_Copier
             InitializeComponent();
             _viewModel = new SelectionElementsViewModel(doc, uidoc, typeOfOperation);
             DataContext = _viewModel;
-            _viewModel.RequestClose += CloseWindow;
+            _viewModel.SelectingOver += StartSettings;
         }
 
-        private void CloseWindow(object sender, EventArgs e)
+        private void StartSettings(object sender, EventArgs e)
         {
-            _viewModel.RequestClose -= CloseWindow;
+            _viewModel.SelectingOver -= StartSettings;
             
-            Close();
             var selectedElementsData = _viewModel.GetSelectedElementsData();
             var copiedElementsWindow = new CopiedElementsWindow(selectedElementsData);
             copiedElementsWindow.Topmost = true;

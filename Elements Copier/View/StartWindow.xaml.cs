@@ -26,12 +26,14 @@ namespace Elements_Copier
             InitializeComponent();
             _viewModel = new StartWindowViewModel();
             DataContext = _viewModel;
-            _viewModel.RequestClose += CloseWindow;
+            _viewModel.RequestClose += SelectionWindow;
         }
 
-        private void CloseWindow(object sender, EventArgs e)
+        private void SelectionWindow(object sender, EventArgs e)
         {
-            Close();
+            _viewModel.RequestClose -= SelectionWindow;
+
+            //Close();
             int typeOfOperation = _viewModel.GetTypeOfOperation();
             var SelectionElementsWindow = new SelectionElementsWindow(doc, uidoc, typeOfOperation);
             SelectionElementsWindow.Topmost = true;
