@@ -5,6 +5,9 @@ using System.Text;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 
+using System.Threading.Tasks;
+
+
 
 namespace Elements_Copier
 {
@@ -12,38 +15,42 @@ namespace Elements_Copier
     {
         private Document doc;
         private UIDocument uidoc;
-        public SelectedElementsData SelectedElementsData { get; }
-        public CopiedElements copiedElements;
+        private CopiedElementsData copiedElementsData;
+
+
+        private XYZ coordinatesOfCopies;
+        private int amountOfCopies;
+        private double distanceBetweenCopies;
+
         public ICommand EndSetCopySettingsCommand { get; }
 
-        private string _selectedElementsText;
+        public CopiedElementsViewModel(CopiedElementsData copiedElementsData, Document doc, UIDocument uidoc)
+        {
+            this.doc = doc;
+            this.uidoc = uidoc;
+            this.copiedElementsData = copiedElementsData;
+
+            EndSetCopySettingsCommand = new RelayCommand(EndSetSettings);
+            UpdateSelectedElementsTextAsync();
+        }
+
+        private string selectedElementsText;
         public string SelectedElementsText
         {
-            get { return _selectedElementsText; }
-            set
+            get { return selectedElementsText; }
+            set 
             {
-                if (_selectedElementsText != value)
-                {
-                    _selectedElementsText = value;
-                    OnPropertyChanged();
-                }
+                selectedElementsText = value; 
+                OnPropertyChanged(); 
+           
             }
         }
-        public CopiedElementsViewModel(SelectedElementsData SelectedElementsData)
-        {
-            this.SelectedElementsData = SelectedElementsData;
 
-            copiedElements = new CopiedElements(SelectedElementsData);
-            doc = SelectedElementsData.doc;
-            uidoc = SelectedElementsData.uidoc;
-            EndSetCopySettingsCommand = new RelayCommand(EndSetting);
-
-            SelectedElementsText = GetSelectedElementsString();
-        }
-        public string GetSelectedElementsString()
+        private async void UpdateSelectedElementsTextAsync() // вывод выбранных элементов в окно
         {
+            await Task.Delay(10);
             StringBuilder elementsListBuilder = new StringBuilder();
-            foreach (var elementId in copiedElements.SelectedElements)
+            foreach (var elementId in copiedElementsData.SelectedElements)
             {
                 Element element = doc.GetElement(elementId);
                 if (element != null)
@@ -51,27 +58,11 @@ namespace Elements_Copier
                     elementsListBuilder.AppendLine($"{element.Name} {element.Id}");
                 }
             }
-            if (copiedElements.SelectedLine != null)
+            if (copiedElementsData.SelectedLine != null)
             {
                 elementsListBuilder.AppendLine("\nЛиния направления выбрана");
             }
-            return elementsListBuilder.ToString();
-        }
-        public string CoordinatesTextBoxText { get; set; }
-        public string NumberOfCopiesTextBoxText { get; set; }
-        public string DistanceBetweenCopiesTextBoxText { get; set; }
-
-        private void EndSetting(object parameter)
-        {
-            string[] coordinates = CoordinatesTextBoxText.Split(',');
-            XYZ coordinatesPoint = new XYZ(double.Parse(coordinates[0]), double.Parse(coordinates[1]), double.Parse(coordinates[2]));
-            copiedElements.CoordinatesToCopy = coordinatesPoint;
-            int numberOfCopies = int.Parse(NumberOfCopiesTextBoxText);
-            copiedElements.AmountOfCopies = numberOfCopies;
-            double distanceBetweenCopies = double.Parse(DistanceBetweenCopiesTextBoxText);
-            copiedElements.DistanceBetweenElements = distanceBetweenCopies;
-            string selectedElementsInfo = GetSelectedElementsString();
-            TaskDialog.Show("Выбранные элементы", selectedElementsInfo);
+            SelectedElementsText = elementsListBuilder.ToString();
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -80,5 +71,9 @@ namespace Elements_Copier
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 
+        private void EndSetSettings (object parameter)
+        {
+            //обработать заданные эелементы
+        }
     }
 }

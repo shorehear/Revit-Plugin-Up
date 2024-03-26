@@ -35,7 +35,7 @@
                 Width="180"
                 HorizontalAlignment="Center"
                 Height="18"
-                Text="(X, Y, Z)"
+                Text="{Binding CoordinatesTextBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='(X,Y,Z)'}"
                 GotFocus="TextBox_GotFocus"
                 LostFocus="TextBox_LostFocus"
             />
@@ -48,7 +48,7 @@
                 Width="180"
                 HorizontalAlignment="Center"
                 Height="18"
-                Text="0"
+                Text="{Binding CountTextBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='0'}"
                 GotFocus="TextBox_GotFocus"
                 LostFocus="TextBox_LostFocus"
             />
@@ -60,7 +60,7 @@
                 Width="180"
                 HorizontalAlignment="Center"
                 Height="18"
-                Text="0"
+                Text="{Binding DistanceTextBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='0'}"
                 GotFocus="TextBox_GotFocus"
                 LostFocus="TextBox_LostFocus"
             />
