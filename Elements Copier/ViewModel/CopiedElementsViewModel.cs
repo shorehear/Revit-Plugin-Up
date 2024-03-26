@@ -22,6 +22,8 @@ namespace Elements_Copier
         private int amountOfCopies;
         private double distanceBetweenCopies;
 
+        
+
         public ICommand EndSetCopySettingsCommand { get; }
 
         public CopiedElementsViewModel(CopiedElementsData copiedElementsData, Document doc, UIDocument uidoc)
@@ -29,6 +31,17 @@ namespace Elements_Copier
             this.doc = doc;
             this.uidoc = uidoc;
             this.copiedElementsData = copiedElementsData;
+
+            string elementsList = "Элементы:\n";
+            foreach (var element in copiedElementsData.SelectedElements)
+            {
+                elementsList += element.IntegerValue + "\n";
+            }
+            TaskDialog.Show("COPIED ELEMENTS DATA", elementsList);
+            if (copiedElementsData.SelectedLine != null)
+            {
+                TaskDialog.Show("Статус линии", "Линия успешно выбрана!");
+            }
 
             EndSetCopySettingsCommand = new RelayCommand(EndSetSettings);
             UpdateSelectedElementsTextAsync();

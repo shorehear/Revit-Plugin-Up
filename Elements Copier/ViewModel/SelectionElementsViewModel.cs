@@ -145,7 +145,7 @@ namespace Elements_Copier
                                         }
                                     }
                                 }
-                                catch (OperationCanceledException) { continueSelecting = false; }
+                                catch (Exception e) { continueSelecting = false; TaskDialog.Show("Ошибка", $"{e.Message}, {e.GetType(e)}"); }
                             }
                             else { break; }
                         }
