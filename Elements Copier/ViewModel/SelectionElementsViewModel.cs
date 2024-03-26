@@ -184,65 +184,62 @@ namespace Elements_Copier
                                     }
                                 }
                             }
+                            else { break; }
                         }
                     }
                     catch (OperationCanceledException) { continueSelecting = false; }
                     break;
+
                 case 3: // алгоритм работы, если операция "выбор элементов по области, без линии"
                     try
                     {
-                        while (true)
+                        while (continueSelecting)
                         {
                             try
                             {
                                 if (continueSelecting)
                                 {
-                                    ICollection<Reference> pickedRefs = uidoc.Selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element);
+                                    IList<Element> selectedElements = uidoc.Selection.PickElementsByRectangle("Выберите прямоугольник");
 
-                                    if (pickedRefs != null && pickedRefs.Count > 0 && continueSelecting)
+                                    foreach (Element selectedElement in selectedElements)
                                     {
-                                        foreach (Reference pickedRef in pickedRefs)
-                                        {
-                                            ElementId elementId = pickedRef.ElementId;
-                                            Element selectedElement = uidoc.Document.GetElement(elementId);
-                                            Category category = GetElementCategory(selectedElement);
+                                        ElementId elementId = selectedElement.Id;
+                                        Category category = GetElementCategory(selectedElement);
 
-                                            if (category != null)
+                                        if (category != null)
+                                        {
+                                            if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
                                             {
-                                                if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
-                                                {
-                                                    continue;
-                                                }
-                                                else if (!selectedElementsData.SelectedElements.Contains(elementId))
-                                                {
-                                                    selectedElementsData.SelectedElements.Add(elementId);
-                                                    UpdateSelectedElementsText();
-                                                }
-                                                else
-                                                {
-                                                    TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
-                                                }
+                                                TaskDialog.Show("Предупреждение", "В текущем режиме не определен выбор направляющей линии.");
+                                                continue;
+                                            }
+                                            else if (!selectedElementsData.SelectedElements.Contains(elementId))
+                                            {
+                                                selectedElementsData.SelectedElements.Add(elementId);
+                                            }
+                                            else
+                                            {
+                                                TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
                                             }
                                         }
                                     }
-                                    else
-                                    {
-                                        continueSelecting = false;
-                                        break;
-                                    }
+
+                                    UpdateSelectedElementsText();
                                 }
                             }
                             catch (Exception ex)
                             {
                                 if (ex is OperationCanceledException && continueSelecting)
                                 {
-                                    continueSelecting = false;
                                     TaskDialog.Show("", "Выбор элементов был прерван пользователем");
+                                    continueSelecting = false;
+                                    break;
                                 }
                                 else if (continueSelecting)
                                 {
                                     TaskDialog.Show("Ошибка", $"Произошла ошибка при выборе элементов: {ex.Message}");
                                     continueSelecting = false;
+                                    break;
                                 }
                                 else
                                 {
@@ -254,9 +251,10 @@ namespace Elements_Copier
                     catch (Autodesk.Revit.Exceptions.OperationCanceledException)
                     {
                         continueSelecting = false;
-                        //RequestClose?.Invoke(this, EventArgs.Empty);
                     }
                     break;
+
+
                 case 4: // алгоритм работы, если операция "выбор элементов по области, с линией"
                     try
                     {
@@ -266,49 +264,47 @@ namespace Elements_Copier
                             {
                                 if (continueSelecting)
                                 {
-                                    ICollection<Reference> pickedRefs = uidoc.Selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element);
+                                    IList<Element> selectedElements = uidoc.Selection.PickElementsByRectangle("Выберите прямоугольник");
 
-                                    if (pickedRefs != null && pickedRefs.Count > 0 && continueSelecting)
+                                    foreach (Element selectedElement in selectedElements)
                                     {
-                                        foreach (Reference pickedRef in pickedRefs)
-                                        {
-                                            ElementId elementId = pickedRef.ElementId;
-                                            Element selectedElement = uidoc.Document.GetElement(elementId);
-                                            Category category = GetElementCategory(selectedElement);
+                                        ElementId elementId = selectedElement.Id;
+                                        Category category = GetElementCategory(selectedElement);
 
-                                            if (category != null)
+                                        if (category != null)
+                                        {
+                                            if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
                                             {
-                                                if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
-                                                {
-                                                    HandleSelectedLine(selectedElement);
-                                                    UpdateSelectedElementsText();
-                                                    return;
-                                                }
-                                                else if (!selectedElementsData.SelectedElements.Contains(elementId))
-                                                {
-                                                    selectedElementsData.SelectedElements.Add(elementId);
-                                                    UpdateSelectedElementsText();
-                                                }
-                                                else
-                                                {
-                                                    TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
-                                                }
+                                                HandleSelectedLine(selectedElement);
+                                            }
+                                            else if (!selectedElementsData.SelectedElements.Contains(elementId))
+                                            {
+                                                selectedElementsData.SelectedElements.Add(elementId);
+                                            }
+                                            else
+                                            {
+                                                TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
                                             }
                                         }
                                     }
+
+                                    UpdateSelectedElementsText();
                                 }
+
                             }
                             catch (Exception ex)
                             {
                                 if (ex is OperationCanceledException && continueSelecting)
                                 {
-                                    continueSelecting = false;
                                     TaskDialog.Show("", "Выбор элементов был прерван пользователем");
+                                    continueSelecting = false;
+                                    break;
                                 }
                                 else if (continueSelecting)
                                 {
                                     TaskDialog.Show("Ошибка", $"Произошла ошибка при выборе элементов: {ex.Message}");
                                     continueSelecting = false;
+                                    break;
                                 }
                                 else
                                 {
@@ -320,7 +316,6 @@ namespace Elements_Copier
                     catch (OperationCanceledException)
                     {
                         continueSelecting = false;
-                        //RequestClose?.Invoke(this, EventArgs.Empty);
                     }
                     break;
                 default:
