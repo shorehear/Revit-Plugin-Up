@@ -2,6 +2,8 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using TextBox = System.Windows.Controls.TextBox;
+using System;
+
 
 namespace Elements_Copier
 {
@@ -15,8 +17,15 @@ namespace Elements_Copier
 
             CopiedElementsData copiedElementsData = new CopiedElementsData(selectedElementsData);
             _viewModel = new CopiedElementsViewModel(copiedElementsData, doc, uidoc);
+            DataContext = _viewModel;
+
+            //_viewModel.EndSetSettings += StartElementsCopier;
         }
 
+        private void StartElementsCopier(object sender, EventArgs e)
+        {
+
+        }
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;

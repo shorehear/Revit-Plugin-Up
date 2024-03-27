@@ -7,14 +7,6 @@ namespace Elements_Copier
 {
     public partial class StartWindow : Window
     {
-        enum TypeOfOperation
-        {
-            SingleSelection,
-            SingleSelectionWithLine,
-            GroupSelection,
-            GroupSelectionWithLine
-        }
-
         private Document doc;
         private UIDocument uidoc;
 

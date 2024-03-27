@@ -23,8 +23,8 @@ namespace Elements_Copier
 
         private void StartSettings(object sender, EventArgs e)
         {
-            _viewModel.SelectingOver -= StartSettings;
-
+            //_viewModel.SelectingOver -= StartSettings;
+            Close();
             var copiedElementsWindow = new CopiedElementsWindow(_viewModel.GetSelectedElementsData(), doc, uidoc);
             copiedElementsWindow.Topmost = true;
             copiedElementsWindow.Show();
