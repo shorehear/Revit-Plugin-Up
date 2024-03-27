@@ -8,21 +8,19 @@ namespace Elements_Copier
 {
     enum TypeOfOperation
     {
-        SingleSelection,
-        GroupSelection
+        SingleSelection = 1,
+        GroupSelection = 2
     }
     enum OptionsOfOperation
     {
-        NeedRotate,
-        NeedUnification,
-        NeedRotateAndUnification
+        NeedRotate = 1,
+        NeedUnification = 2,
+        NeedRotateAndUnification = 3
     }
     public class StartWindowViewModel : INotifyPropertyChanged
     {
-        private TypeOfOperation? typeOfOperation;
-        private bool singleSelectionChosen;
-        private bool groupSelectionChosen;
-        private OptionsOfOperation? optionsOfOperation;
+        private TypeOfOperation typeOfOperation = 0;
+        private OptionsOfOperation optionsOfOperation = 0;
 
         public ICommand SingleSelectionCommand { get; }
         public ICommand GroupSelectionCommand { get; }
@@ -40,12 +38,10 @@ namespace Elements_Copier
 
         private void SingleSelection(object parameter)
         {
-            singleSelectionChosen = true;
             typeOfOperation = TypeOfOperation.SingleSelection;
         }
         private void GroupSelection(object parameter)
         {
-            groupSelectionChosen = true;
             typeOfOperation = TypeOfOperation.GroupSelection;
         }
 
@@ -59,6 +55,21 @@ namespace Elements_Copier
                 {
                     needRotate = value;
                     OnPropertyChanged(nameof(NeedRotate));
+                    UpdateOptionsOfOperation();
+                }
+            }
+        }
+
+        private bool selectedAndCopiedElements;
+        public bool SelectedAndCopiedElements
+        {
+            get { return selectedAndCopiedElements; }
+            set
+            {
+                if (selectedAndCopiedElements != value)
+                {
+                    selectedAndCopiedElements = value;
+                    OnPropertyChanged(nameof(SelectedAndCopiedElements));
                     UpdateOptionsOfOperation();
                 }
             }
@@ -80,26 +91,11 @@ namespace Elements_Copier
             }
             else
             {
-                optionsOfOperation = null;
+                optionsOfOperation = 0;
             }
             OnPropertyChanged(nameof(optionsOfOperation));
         }
-
-
-        private bool selectedAndCopiedElements;
-        public bool SelectedAndCopiedElements
-        {
-            get { return selectedAndCopiedElements; }
-            set
-            {
-                if (selectedAndCopiedElements != value)
-                {
-                    selectedAndCopiedElements = value;
-                    OnPropertyChanged(nameof(SelectedAndCopiedElements));
-                }
-            }
-        }
-
+                
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged(string propertyName)
         {
@@ -108,11 +104,13 @@ namespace Elements_Copier
 
         private void GetSelection(object parameter)
         {
-            if (!singleSelectionChosen && !groupSelectionChosen)
+            if (typeOfOperation == 0)
             {
-                TaskDialog.Show("Ошибка", "Не были указаны параметры выбора объектов");
+                TaskDialog.Show("Ошибка", "Не была выбрана операция");
                 return;
             }
+
+            TaskDialog.Show("Данные перехода", $"Тип операции: {GetTypeOfOperation()}\nТип опции: {GetOptionsOfOperation()}");
             RequestClose?.Invoke(this, EventArgs.Empty);
         }
 
@@ -125,9 +123,9 @@ namespace Elements_Copier
                 case TypeOfOperation.GroupSelection:
                     return 2;
                 default:
-                    throw new InvalidOperationException("Некорректный выбор операции");
+                    return 0;
             }
-        } //для вызова из селекта
+        }
 
         public int GetOptionsOfOperation()
         {
@@ -140,9 +138,9 @@ namespace Elements_Copier
                 case OptionsOfOperation.NeedRotateAndUnification:
                     return 3;
                 default:
-                    throw new InvalidOperationException("Некорректный выбор опции операции");
+                    return 0;
             }
-        } //для вызова из копира
+        }
 
 
     }

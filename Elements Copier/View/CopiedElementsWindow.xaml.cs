@@ -22,10 +22,10 @@ namespace Elements_Copier
             //_viewModel.EndSetSettings += StartElementsCopier;
         }
 
-        private void StartElementsCopier(object sender, EventArgs e)
-        {
+        //private void StartElementsCopier(object sender, EventArgs e)
+        //{
 
-        }
+        //}
         private void TextBox_GotFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = (TextBox)sender;
