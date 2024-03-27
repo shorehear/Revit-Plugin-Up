@@ -10,11 +10,13 @@ namespace Elements_Copier
         private Document doc;
         private UIDocument uidoc;
         private readonly SelectionElementsViewModel _viewModel;
+        private int optionsOfOperation;
 
-        public SelectionElementsWindow(Document doc, UIDocument uidoc, int typeOfOperation)
+        public SelectionElementsWindow(Document doc, UIDocument uidoc, int typeOfOperation, int optionsOfOperation)
         {
             this.doc = doc;
             this.uidoc = uidoc;
+            this.optionsOfOperation = optionsOfOperation;
             InitializeComponent();
             _viewModel = new SelectionElementsViewModel(doc, uidoc, typeOfOperation);
             DataContext = _viewModel;
@@ -25,7 +27,7 @@ namespace Elements_Copier
         {
             //_viewModel.SelectingOver -= StartSettings;
             Close();
-            var copiedElementsWindow = new CopiedElementsWindow(_viewModel.GetSelectedElementsData(), doc, uidoc);
+            var copiedElementsWindow = new CopiedElementsWindow(_viewModel.GetSelectedElementsData(), optionsOfOperation, doc, uidoc);
             copiedElementsWindow.Topmost = true;
             copiedElementsWindow.Show();
         }

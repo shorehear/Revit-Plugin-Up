@@ -3,7 +3,6 @@ using System.ComponentModel;
 using System;
 
 using Autodesk.Revit.UI;
-using Autodesk.Revit.DB;
 
 namespace Elements_Copier
 {

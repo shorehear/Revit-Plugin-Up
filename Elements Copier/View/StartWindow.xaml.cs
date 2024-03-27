@@ -27,7 +27,8 @@ namespace Elements_Copier
 
             //Close();
             int typeOfOperation = _viewModel.GetTypeOfOperation();
-            var SelectionElementsWindow = new SelectionElementsWindow(doc, uidoc, typeOfOperation);
+            int optionsOfOperation = _viewModel.GetOptionsOfOperation();
+            var SelectionElementsWindow = new SelectionElementsWindow(doc, uidoc, typeOfOperation, optionsOfOperation);
             SelectionElementsWindow.Topmost = true;
             SelectionElementsWindow.Show();
         }

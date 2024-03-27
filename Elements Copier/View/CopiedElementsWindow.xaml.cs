@@ -11,7 +11,7 @@ namespace Elements_Copier
     {
         private readonly CopiedElementsViewModel _viewModel;
 
-        public CopiedElementsWindow(SelectedElementsData selectedElementsData, Document doc, UIDocument uidoc)
+        public CopiedElementsWindow(SelectedElementsData selectedElementsData, int optionsOfOperation, Document doc, UIDocument uidoc)
         {
             InitializeComponent();
 
