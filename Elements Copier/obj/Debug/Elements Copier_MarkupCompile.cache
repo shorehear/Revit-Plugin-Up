@@ -4,7 +4,7 @@
 library
 C#
 .cs
-C:\Users\abyankina\Desktop\Revit-Plugin-Up\Elements Copier\obj\Debug\
+C:\Users\abyankina\Desktop\Revit-Plugin-Up-main\Elements Copier\obj\Debug\
 Elements_Copier
 none
 false
@@ -12,7 +12,7 @@ DEBUG;TRACE
 
 3-485810193
 
-112129101911
+12-803038036
 151665652090
 View\CopiedElementsWindow.xaml;View\SelectionElementsWindow.xaml;View\StartWindow.xaml;
 

@@ -89,23 +89,23 @@ namespace Elements_Copier
         {
             switch (typeOfOperation)
             {
-                case 1:
+                case 1: 
                     try
                     {
                         SingleSelectingElements(continueSelecting);
                     }
-                    catch (OperationCanceledException)
-                    {
-                        continueSelecting = false;
+                    catch (OperationCanceledException) 
+                    { 
+                        continueSelecting = false; 
                     }
-                    catch (Exception ex)
+                    catch(Exception ex)
                     {
                         continueSelecting = false;
                         TaskDialog.Show("Ошибка", $"{ex.Message}");
                     }
                     break;
 
-                case 2:
+                case 2: 
                     try
                     {
                         GroupSelectingElements(continueSelecting);
@@ -114,7 +114,7 @@ namespace Elements_Copier
                     {
                         continueSelecting = false;
                     }
-                    catch (Exception ex)
+                    catch(Exception ex)
                     {
                         continueSelecting = false;
                         TaskDialog.Show("Ошибка", $"{ex.Message}");
@@ -124,9 +124,9 @@ namespace Elements_Copier
                 default:
                     TaskDialog.Show("Ошибка", "Некорректно инициализирован тип операции");
                     break;
-            }
         }
-
+    }
+             
         private string selectedElementsText;
         public string SelectedElementsText
         {
@@ -165,7 +165,7 @@ namespace Elements_Copier
         {
             return selectedElementsData;
         }
-
+    
         private void SingleSelectingElements(bool continueSelecting)
         {
             if (!continueSelecting) { return; }
@@ -210,45 +210,41 @@ namespace Elements_Copier
             {
                 try
                 {
-                    ICollection<Reference> pickedRefs = uidoc.Selection.PickObjects(Autodesk.Revit.UI.Selection.ObjectType.Element);
+                    IList<Element> selectedElements = uidoc.Selection.PickElementsByRectangle("Выберите область");
 
-                    if (continueSelecting && pickedRefs != null && pickedRefs.Count > 0)
+                    foreach (Element selectedElement in selectedElements)
                     {
-                        foreach (Reference pickedRef in pickedRefs)
-                        {
-                            ElementId elementId = pickedRef.ElementId;
-                            Element selectedElement = uidoc.Document.GetElement(elementId);
-                            Category category = GetElementCategory(selectedElement);
+                        ElementId elementId = selectedElement.Id;
+                        Category category = GetElementCategory(selectedElement);
 
-                            if (category != null)
+                        if (category != null)
+                        {
+                            if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
                             {
-                                if (category.Id.IntegerValue == (int)BuiltInCategory.OST_Lines)
-                                {
-                                    HandleSelectedLine(selectedElement);
-                                    UpdateSelectedElementsText();
-                                }
-                                else if (!selectedElementsData.SelectedElements.Contains(elementId))
-                                {
-                                    selectedElementsData.SelectedElements.Add(elementId);
-                                    UpdateSelectedElementsText();
-                                }
-                                else
-                                {
-                                    TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
-                                }
+                                HandleSelectedLine(selectedElement);
+                            }
+                            else if (!selectedElementsData.SelectedElements.Contains(elementId))
+                            {
+                                selectedElementsData.SelectedElements.Add(elementId);
+                            }
+                            else
+                            {
+                                TaskDialog.Show("Ошибка", "Этот элемент уже выбран.");
                             }
                         }
                     }
+
+                    UpdateSelectedElementsText();
                 }
+                catch (OperationCanceledException) { continueSelecting = false; break; }
                 catch (Exception ex)
                 {
-                    TaskDialog.Show("Ошибка", $"246 строка\n+{ex.Message}");
+                    TaskDialog.Show("Ошибка", $"Произошла ошибка при выборе элементов: {ex.Message}");
                     continueSelecting = false;
+                    break;
                 }
             }
         }
-
-
     }
 
     public class RelayCommand : ICommand

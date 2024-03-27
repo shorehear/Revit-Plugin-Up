@@ -35,7 +35,7 @@
                 Width="180"
                 HorizontalAlignment="Center"
                 Height="18"
-                Text="{Binding CoordinatesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='(0,0,0)'}"
+                Text="{Binding CoordinatesofCopiesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='(0,0,0)'}"
                 GotFocus="TextBox_GotFocus"
                 LostFocus="TextBox_LostFocus"
             />
@@ -48,7 +48,7 @@
                 Width="180"
                 HorizontalAlignment="Center"
                 Height="18"
-                Text="{Binding CountTextBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='0'}"
+                Text="{Binding NumberOfCopiesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='0'}"
                 GotFocus="TextBox_GotFocus"
                 LostFocus="TextBox_LostFocus"
             />
@@ -60,7 +60,7 @@
                 Width="180"
                 HorizontalAlignment="Center"
                 Height="18"
-                Text="{Binding DistanceTextBoxText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='0'}"
+                Text="{Binding DistanceBetweenCopiesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='0'}"
                 GotFocus="TextBox_GotFocus"
                 LostFocus="TextBox_LostFocus"
             />
@@ -72,7 +72,17 @@
                 Margin="0,15,0,0" Height="20"
             />
 
+            <Label
+                Content ="Выбранные опции над элементами: "
+                HorizontalAlignment="Center"
+            />
 
+            <TextBox 
+                Text="{Binding SelectedOptionsText, Mode=OneWay}"
+                IsReadOnly="True" 
+                Width="200" 
+                Height="20"
+                HorizontalAlignment="Center"/>
         </StackPanel>
     </StackPanel>
 </Window>
