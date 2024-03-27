@@ -35,7 +35,7 @@
                 Width="180"
                 HorizontalAlignment="Center"
                 Height="18"
-                Text="{Binding CoordinatesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='(X,Y,Z)'}"
+                Text="{Binding CoordinatesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, FallbackValue='(0,0,0)'}"
                 GotFocus="TextBox_GotFocus"
                 LostFocus="TextBox_LostFocus"
             />

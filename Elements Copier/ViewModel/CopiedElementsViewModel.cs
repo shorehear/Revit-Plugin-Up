@@ -56,7 +56,7 @@ namespace Elements_Copier
             }
             if (copiedElementsData.SelectedLine != null)
             {
-                elementsListBuilder.AppendLine("\nЛиния направления выбрана");
+                elementsListBuilder.AppendLine($"\nКоординаты линии копирования:\n{copiedElementsData.SelectedLine.GetEndPoint(0)}, \n{copiedElementsData.SelectedLine.GetEndPoint(1)}.");
             }
             SelectedElementsText = elementsListBuilder.ToString();
         }
