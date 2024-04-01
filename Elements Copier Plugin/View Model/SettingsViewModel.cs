@@ -99,10 +99,10 @@ namespace Plugin
         }
         private void UpdatePointData()
         {
-            string coordinates = $"({SelectedPoint.X:F2}; {SelectedPoint.Y:F2}; {SelectedPoint.X:F2})";
-            SelectedPointData = coordinates;
+            SelectedPointData = SelectedPoint != null ? $"({SelectedPoint.X:F2}; {SelectedPoint.Y:F2}; {SelectedPoint.Z:F2})" : "Null";
             OnPropertyChanged();
         }
+
         #endregion
 
         #region Выбор линии для копирования
@@ -136,7 +136,7 @@ namespace Plugin
         }
         private void UpdateLineData()
         {
-            SelectedLineData = SelectedLine.Id.ToString();
+            SelectedLineData = SelectedLine != null ? SelectedLine.Id.ToString() : "Null";
             OnPropertyChanged();
         }
         #endregion
@@ -159,6 +159,17 @@ namespace Plugin
             if(SelectedLine != null && SelectedPoint != null)
             {
                 TaskDialog.Show("Ошибка", "Пожалуйста, выберите что-то одно: либо линию направления, либо точку копирования");
+                try
+                {
+                    SelectedLine = null;
+                    UpdateLineData();
+                    SelectedPoint = null;
+                    UpdatePointData();
+                }
+                catch(Exception ex)
+                {
+                    TaskDialog.Show("Ошибка", $"{ex.Message}");
+                } 
                 return false;
             }
             return true;

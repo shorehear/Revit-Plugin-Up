@@ -10,3 +10,18 @@ C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\ob
 C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\View\SelectionWindow.g.cs
 C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\View\SettingsWindow.baml
 C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\View\SettingsWindow.g.cs
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.csproj.AssemblyReference.cache
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\View\SelectionWindow.baml
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\View\SettingsWindow.baml
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\View\SelectionWindow.g.cs
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\View\SettingsWindow.g.cs
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\Elements Copier Plugin_MarkupCompile.cache
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.g.resources
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.csproj.CoreCompileInputs.cache
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.dll
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.pdb
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\bin\Debug\Elements Copier Plugin.dll
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\bin\Debug\Elements Copier Plugin.pdb
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\bin\Debug\RevitAPI.dll
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\bin\Debug\RevitAPI.xml
+C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\Elements.AC892684.Up2Date
