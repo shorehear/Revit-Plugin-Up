@@ -3,12 +3,12 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Title="Менеджер выбора элементов" 
              Height="500" 
-             Width="420">
+             Width="300">
     <StackPanel Margin="0,0,0,15">
         <Label Content="Выбранные элементы:" Margin="10,10,0,0" Width="135" Height="25" HorizontalAlignment="Left" />
 
         <TextBox Text="{Binding SelectedElementsText}" IsReadOnly="True" VerticalScrollBarVisibility="Auto" 
-                 HorizontalScrollBarVisibility="Auto" Width="380" Height="350"/>
+                 HorizontalScrollBarVisibility="Auto" Width="275" Height="350"/>
         
         <Button Command="{Binding AdditionalElementsCommand}" Width="80" Margin="0,10,10,0" HorizontalAlignment="Right">
             <Button.ToolTip>

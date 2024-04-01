@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using TextBox = System.Windows.Controls.TextBox;
 
 namespace Plugin
 {
@@ -13,6 +14,5 @@ namespace Plugin
             DataContext = _viewModel;
             InitializeComponent();
         }
-        
     }
 }

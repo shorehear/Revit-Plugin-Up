@@ -6,10 +6,56 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System.Windows.Input;
 
+using System.Collections.Generic;
+
 namespace Plugin
 {
     public class SettingsViewModel : INotifyPropertyChanged
     {
+        #region Инициализация свойств: элементы, линия, точка, дистанция, количество копий, необходимость во вращении, работа с выбранными элементами и с копируемыми
+        public IList<ElementId> SelectedElements
+        {
+            get { return ElementsData.SelectedElements; }
+            set { ElementsData.SelectedElements = value; OnPropertyChanged("Выбранные элементы"); }
+        }
+
+        public ModelLine SelectedLine
+        {
+            get { return ElementsData.SelectedLine; }
+            set { ElementsData.SelectedLine = value; OnPropertyChanged("Выбранная линия"); }
+        }
+
+        public XYZ SelectedPoint
+        {
+            get { return ElementsData.SelectedPoint; }
+            set { ElementsData.SelectedPoint = value; OnPropertyChanged("Выбранная точка"); }
+        }
+
+        public double DistanceBetweenElements
+        {
+            get { return ElementsData.DistanceBetweenElements; }
+            set { ElementsData.DistanceBetweenElements = value; OnPropertyChanged("Дистанция между копиями"); }
+        }
+
+        public int CountElements
+        {
+            get { return ElementsData.CountElements; }
+            set { ElementsData.CountElements = value; OnPropertyChanged("Количество копий"); }
+        }
+
+        public bool NeedRotate
+        {
+            get { return ElementsData.NeedRotate; }
+            set { ElementsData.NeedRotate = value; OnPropertyChanged("Необходимо вращение"); }
+        }
+
+        public bool SelectedAndCopiedElements
+        {
+            get { return ElementsData.SelectedAndCopiedElements; }
+            set { ElementsData.SelectedAndCopiedElements = value; OnPropertyChanged("Перемещение и выбранных, и копированных элементов"); }
+        }
+        #endregion
+
         private Document doc;
         private UIDocument uidoc;
 
@@ -17,7 +63,6 @@ namespace Plugin
         public ICommand EndSettingsCommand { get; }
         public ICommand SelectPointCommand { get; }
         public ICommand SelectLineCommand { get; }
-
         public SettingsViewModel(Document doc, UIDocument uidoc)
         {
             this.uidoc = uidoc;
@@ -28,20 +73,20 @@ namespace Plugin
             EndSettingsCommand = new RelayCommand(EndSettings);
         }
 
+        #region Выбор точки для копирования
         private void SelectPoint(object parameter)
         {
             try
             {
                 if (uidoc != null)
                 {
-                    ElementsData.SelectedPoint = uidoc.Selection.PickPoint("Укажите точку");
+                    SelectedPoint = uidoc.Selection.PickPoint("Укажите точку");
                     UpdatePointData();
                 }
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException) { TaskDialog.Show("Отмена", "Пользователь отменил операцию."); }
             catch (Exception ex) { TaskDialog.Show("Ошибка", $"{ex.Message}, [42 settings]"); }
         }
-
         private string selectedPointData;
         public string SelectedPointData
         {
@@ -50,6 +95,33 @@ namespace Plugin
             {
                 selectedPointData = value;
                 OnPropertyChanged();
+            }
+        }
+        private void UpdatePointData()
+        {
+            string coordinates = $"({SelectedPoint.X:F2}; {SelectedPoint.Y:F2}; {SelectedPoint.X:F2})";
+            SelectedPointData = coordinates;
+            OnPropertyChanged();
+        }
+        #endregion
+
+        #region Выбор линии для копирования
+        private void SelectLine(object parameter)
+        {
+            if (uidoc != null)
+            {
+                var filter = new LineSelectionFilter();
+                try
+                {
+                    var lineReference = uidoc.Selection.PickObject(ObjectType.Element, filter, "Укажите линию");
+                    SelectedLine = uidoc.Document.GetElement(lineReference) as ModelLine;
+                    UpdateLineData();
+                }
+                catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+                {
+                    TaskDialog.Show("Отмена", "Пользователь отменил операцию\n[67 settings]");
+                }
+                catch (Exception ex) { TaskDialog.Show("Ошибка", $"{ex.Message}\n[69 settings]"); }
             }
         }
         private string selectedLineData;
@@ -62,54 +134,41 @@ namespace Plugin
                 OnPropertyChanged();
             }
         }
-
-        private void UpdatePointData()
-        {
-            string coordinates = $"({ElementsData.SelectedPoint.X:F2}; {ElementsData.SelectedPoint.Y:F2}; {ElementsData.SelectedPoint.X:F2})";
-            SelectedPointData = coordinates;
-            OnPropertyChanged();
-        }
         private void UpdateLineData()
         {
-            SelectedLineData = ElementsData.SelectedLine.Id.ToString();
+            SelectedLineData = SelectedLine.Id.ToString();
             OnPropertyChanged();
         }
-        private void SelectLine(object parameter)
-        {
+        #endregion
 
-            if (uidoc != null)
-            {
-                var filter = new LineSelectionFilter();
-                try
-                {
-                    var lineReference = uidoc.Selection.PickObject(ObjectType.Element, filter, "Укажите линию");
-                    ElementsData.SelectedLine = uidoc.Document.GetElement(lineReference) as ModelLine;
-                    UpdateLineData();
-                }
-                catch (Autodesk.Revit.Exceptions.OperationCanceledException) 
-                {
-                    TaskDialog.Show("Отмена", "Пользователь отменил операцию\n[67 settings]");
-                }
-                catch (Exception ex) { TaskDialog.Show("Ошибка", $"{ex.Message}\n[69 settings]"); }
-            }
-        }
         private void EndSettings(object parameter)
         {
-            EndSettingsWindow?.Invoke(this, new EventArgs());
-            TaskDialog.Show("Завершено", $"Значения, заданные для копирования: {ElementsData.SelectedLine.Id}, " +
-                $"\n{ElementsData.CountElements},\n{ElementsData.DistanceBetweenElements}");
+            if (Injerity())
+            {
+                EndSettingsWindow?.Invoke(this, new EventArgs());
+            }
         }
 
-        private string cointCopies;
-        public string CointCopiesText
+        private bool Injerity()
         {
-            get { return cointCopies; }
+            if(SelectedLine == null && SelectedPoint == null)
+            {
+                TaskDialog.Show("Ошибка", "Пожалуйста, выберите либо линию копирования, либо точку копирования");
+                return false;
+            }
+            return true;
+        }
+
+        #region Настройки: количество копий, дистанция между ними
+        private string countCopies;
+        public string CountCopiesText
+        {
+            get { return countCopies; }
             set
             {
-                cointCopies = value;
+                countCopies = value;
                 OnPropertyChanged();
-                ElementsData.CountElements = int.Parse(cointCopies);
-
+                CountElements = int.Parse(countCopies);
             }
         }
 
@@ -121,9 +180,10 @@ namespace Plugin
             {
                 distanceBetweenCopies = value;
                 OnPropertyChanged();
-                ElementsData.DistanceBetweenElements = double.Parse(distanceBetweenCopies);
+                DistanceBetweenElements = double.Parse(distanceBetweenCopies);
             }
         }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
