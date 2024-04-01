@@ -36,6 +36,7 @@ namespace Plugin
             Initialize();
         }
 
+        #region Инициализация окна выбора элементов
         private async void Initialize()
         {
             await Task.Delay(1);
@@ -54,7 +55,9 @@ namespace Plugin
                 Task.Delay(500).ContinueWith(_ => isSelecting = false);
             }
         }
+        #endregion
 
+        #region Добавление элементов в стек
         private void RequestElementSelection() 
         {
             if (continueSelecting)
@@ -94,7 +97,9 @@ namespace Plugin
                 }
             }
         }
+        #endregion
 
+        #region Обработка окна выбора элементов
         private string selectedElementsText;
         public string SelectedElementsText
         {
@@ -105,7 +110,6 @@ namespace Plugin
                 OnPropertyChanged();
             }
         }
-
         private void UpdateSelectedElementsText()
         {
             StringBuilder elementsListBuilder = new StringBuilder();
@@ -120,6 +124,8 @@ namespace Plugin
             SelectedElementsText = elementsListBuilder.ToString();
         }
         private Category GetElementCategory(Element element) { return element?.Category; }
+        #endregion
+
         private void StopSelecting(object parameter)
         {
             continueSelecting = false;

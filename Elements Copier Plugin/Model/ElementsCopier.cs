@@ -8,7 +8,6 @@ namespace Plugin
     {
         public ElementsCopier(Document doc, UIDocument uidoc)
         {
-
         }
     }
 }

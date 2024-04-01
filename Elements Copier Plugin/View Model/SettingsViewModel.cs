@@ -156,6 +156,11 @@ namespace Plugin
                 TaskDialog.Show("Ошибка", "Пожалуйста, выберите либо линию копирования, либо точку копирования");
                 return false;
             }
+            if(SelectedLine != null && SelectedPoint != null)
+            {
+                TaskDialog.Show("Ошибка", "Пожалуйста, выберите что-то одно: либо линию направления, либо точку копирования");
+                return false;
+            }
             return true;
         }
 

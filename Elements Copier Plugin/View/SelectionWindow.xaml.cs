@@ -18,7 +18,7 @@ namespace Plugin
             _viewModel = new SelectionElementsViewModel(doc, uidoc);
             DataContext = _viewModel;
             InitializeComponent();
-            
+
             _viewModel.StartSettingsWindow += StartSettings;
         }
 
@@ -27,6 +27,13 @@ namespace Plugin
             var settingsWindow = new SettingsWindow(doc, uidoc);
             settingsWindow.Topmost = true;
             settingsWindow.Show();
+
+            settingsWindow.CloseAllWindows += CloseAllWindowsHandler;
+        }
+
+        private void CloseAllWindowsHandler(object sender, EventArgs e)
+        {
+            Close();
         }
     }
 }

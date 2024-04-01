@@ -57,6 +57,7 @@
     <Compile Include="Model\ElementsCopier.cs" />
     <Compile Include="Model\ElementsData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utilities\Operations.cs" />
     <Compile Include="Utilities\RelayCommand.cs" />
     <Compile Include="View Model\SelectionElementsViewModel.cs" />
     <Compile Include="View Model\SettingsViewModel.cs" />
