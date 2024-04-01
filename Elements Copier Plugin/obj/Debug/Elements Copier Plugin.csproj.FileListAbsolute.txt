@@ -1,0 +1,12 @@
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\bin\Debug\Elements Copier Plugin.dll
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\bin\Debug\Elements Copier Plugin.pdb
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.csproj.AssemblyReference.cache
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.csproj.CoreCompileInputs.cache
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.dll
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.pdb
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\Elements Copier Plugin_MarkupCompile.cache
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.g.resources
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\View\SelectionWindow.baml
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\View\SelectionWindow.g.cs
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\View\SettingsWindow.baml
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\View\SettingsWindow.g.cs
