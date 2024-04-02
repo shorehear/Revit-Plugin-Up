@@ -10,13 +10,10 @@ namespace Plugin
         private Document doc;
         private UIDocument uidoc;
 
-        private Line selectedLine;
         public ElementsCopier(Document doc, UIDocument uidoc)
         {
             this.doc = doc;
             this.uidoc = uidoc;
-
-            selectedLine = ElementsData.SelectedLine != null ? (Line)(ElementsData.SelectedLine) : null;
         }
 
         public void CopyElements()

@@ -25,3 +25,5 @@ C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\bin\Debug\Ele
 C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\bin\Debug\RevitAPI.dll
 C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\bin\Debug\RevitAPI.xml
 C:\Users\kaidy\source\repos\Revit-Plugin-Up\Elements Copier Plugin\obj\Debug\Elements.AC892684.Up2Date
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\bin\Debug\RevitAPI.xml
+C:\Users\abyankina\source\repos\Elements Copier Plugin\Elements Copier Plugin\obj\Debug\Elements Copier Plugin.csproj.CopyComplete
