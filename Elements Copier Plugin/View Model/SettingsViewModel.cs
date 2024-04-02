@@ -19,7 +19,7 @@ namespace Plugin
             set { ElementsData.SelectedElements = value; OnPropertyChanged("Выбранные элементы"); }
         }
 
-        public Line SelectedLine
+        public ModelLine SelectedLine
         {
             get { return ElementsData.SelectedLine; }
             set { ElementsData.SelectedLine = value; OnPropertyChanged("Выбранная линия"); }
@@ -116,7 +116,7 @@ namespace Plugin
                     var lineReference = uidoc.Selection.PickObject(ObjectType.Element, filter, "Укажите линию");
                     Element selectedElement = uidoc.Document.GetElement(lineReference);
 
-                    SelectedLine = ((CurveElement)selectedElement).GeometryCurve as Line;
+                    SelectedLine = uidoc.Document.GetElement(lineReference) as ModelLine;
                     UpdateLineData();
                 }
                 catch (Autodesk.Revit.Exceptions.OperationCanceledException)

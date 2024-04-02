@@ -28,7 +28,6 @@ namespace Plugin
         {
             try
             {
-                
                 CloseAllWindows?.Invoke(this, EventArgs.Empty);
                 EndSettingsWindow?.Invoke(this, EventArgs.Empty);
                 Close();

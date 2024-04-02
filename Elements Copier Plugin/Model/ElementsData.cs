@@ -6,7 +6,7 @@ namespace Plugin
     public static class ElementsData
     {
         public static IList<ElementId> SelectedElements { get; set; }
-        public static Line SelectedLine { get; set; }
+        public static ModelLine SelectedLine { get; set; }
         public static XYZ SelectedPoint { get; set; }
         public static bool NeedRotate { get; set; }
         public static bool SelectedAndCopiedElements { get; set; }
