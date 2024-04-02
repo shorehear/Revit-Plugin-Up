@@ -8,7 +8,7 @@ namespace Plugin
     {
         bool ISelectionFilter.AllowElement(Element elem)
         {
-            return elem is Line ? true : false;
+            return elem is Line;
         }
 
         bool ISelectionFilter.AllowReference(Reference reference, XYZ position)

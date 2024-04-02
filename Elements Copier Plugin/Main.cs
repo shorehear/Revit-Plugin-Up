@@ -9,17 +9,24 @@ namespace Plugin
     [Regeneration(RegenerationOption.Manual)]
     public class Plugin : IExternalCommand
     {
+        private Document doc;
+        private UIDocument uidoc;
         public Result Execute(ExternalCommandData commandData, ref string message, ElementSet elements)
         {
             try
             {
                 UIApplication uiapp = commandData.Application;
-                UIDocument uidoc = uiapp.ActiveUIDocument;
-                Document doc = uidoc.Document;
+                uidoc = uiapp.ActiveUIDocument;
+                doc = uidoc.Document;
+
 
                 SelectionWindow selectionWindow = new SelectionWindow(doc, uidoc);
                 selectionWindow.Topmost = true;
                 selectionWindow.Show();
+
+                selectionWindow.StartElementsCopier += ElementsCopierWork;
+
+
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
@@ -31,6 +38,18 @@ namespace Plugin
                 return Result.Failed;
             }
             return Result.Succeeded;
+        }
+        private void ElementsCopierWork(object sender, EventArgs e)
+        {
+            try
+            {
+                ElementsCopier elementsCopier = new ElementsCopier(doc, uidoc);
+                elementsCopier.CopyElements();
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Ошибка", "Main.60\n" + ex.Message);
+            }
         }
     }
 }

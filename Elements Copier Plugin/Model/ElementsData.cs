@@ -25,5 +25,17 @@ namespace Plugin
             CountElements = 1;
         }
 
+        public static void DeleteObj()
+        {
+            SelectedElements = null;
+            SelectedLine = null;
+            SelectedPoint = null;
+            NeedRotate = false;
+            SelectedAndCopiedElements = false;
+            DistanceBetweenElements = 0.0;
+            CountElements = 1;
+        }
+
+
     }
 }

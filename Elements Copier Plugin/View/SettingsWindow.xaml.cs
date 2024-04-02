@@ -9,6 +9,7 @@ namespace Plugin
     {
         private readonly SettingsViewModel _viewModel;
         public event EventHandler CloseAllWindows;
+        public event EventHandler EndSettingsWindow;
 
         private Document doc;
         private UIDocument uidoc;
@@ -25,9 +26,18 @@ namespace Plugin
 
         private void EndSettings(object sender, EventArgs e)
         {
-            ElementsCopier elementsCopier = new ElementsCopier(doc, uidoc);
-            CloseAllWindows?.Invoke(this, EventArgs.Empty);
-            Close();
+            try
+            {
+                
+                CloseAllWindows?.Invoke(this, EventArgs.Empty);
+                EndSettingsWindow?.Invoke(this, EventArgs.Empty);
+                Close();
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Ошибка", "SettingsWindow.38\n" + ex.Message);
+            }
+
         }
     }
 }

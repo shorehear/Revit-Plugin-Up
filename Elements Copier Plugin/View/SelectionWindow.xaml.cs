@@ -10,6 +10,9 @@ namespace Plugin
         private readonly SelectionElementsViewModel _viewModel;
         private Document doc;
         private UIDocument uidoc;
+
+        public event EventHandler StartElementsCopier;
+
         public SelectionWindow(Document doc, UIDocument uidoc)
         {
             this.doc = doc;
@@ -33,7 +36,8 @@ namespace Plugin
 
         private void CloseAllWindowsHandler(object sender, EventArgs e)
         {
-            Close();
+            //Close();
+            StartElementsCopier?.Invoke(this, EventArgs.Empty);
         }
     }
 }

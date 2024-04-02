@@ -1,7 +1,8 @@
 ﻿using System.Collections.Generic;
-using System.Linq;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using System.Threading.Tasks;
+using System;
 
 namespace Plugin
 {
@@ -18,8 +19,89 @@ namespace Plugin
 
         public void CopyElements()
         {
-            
+            var operationType = OperationType.GetOperationType();
+
+            switch (operationType.Item1)
+            {
+                case PositionOperations.IHavePoint:
+                    switch (operationType.Item2)
+                    {
+                        case MoveOperations.MoveOnlyCopiedElements:
+                            PointAndCopy();
+                            break;
+                        case MoveOperations.MoveCopiedAndSelecedElements:
+                            //
+                            break;
+                    }
+                    break;
+
+                case PositionOperations.IHaveLine:
+                    switch (operationType.Item2)
+                    {
+                        case MoveOperations.MoveOnlyCopiedElements:
+                            //
+                            break;
+                        case MoveOperations.MoveCopiedAndSelecedElements:
+                            //
+                            break;
+                    }
+                    break;
+
+                case PositionOperations.Error:
+                    switch (operationType.Item2)
+                    {
+                        case MoveOperations.Error:
+                            //
+                            break;
+                    }
+                    break;
+
+                default:
+                    TaskDialog.Show("Ошибка", "Некорректно заданная операция");
+                    break;
+            }
         }
+
+        private void PointAndCopy()
+        {
+            try
+            {
+                Transaction transaction = new Transaction(doc, "Копирование элементов");
+
+                if (ElementsData.SelectedElements.Count > 0 && ElementsData.SelectedPoint != null)
+                {
+
+                    for (int copyIndex = 0; copyIndex < ElementsData.CountElements; copyIndex++)
+                    {
+                        XYZ translation = new XYZ(0, 0, 0);
+
+                        foreach (ElementId elementId in ElementsData.SelectedElements)
+                        {
+                            ICollection<ElementId> newElementsIds = ElementTransformUtils.CopyElements(doc, new List<ElementId> { elementId }, translation);
+
+                            if (newElementsIds != null && newElementsIds.Count > 0)
+                            {
+                                translation = ElementsData.SelectedPoint;
+                            }
+                            else
+                            {
+                                TaskDialog.Show("Ошибка", "Откат транзакции");
+                                transaction.RollBack();
+                                return;
+                            }
+                        }
+                    }
+
+                    TaskDialog.Show("Успешно", "Элементы скопированы");
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Ошибка", "Произошла ошибка: " + ex.Message);
+            }
+        }
+
+
 
         private double GetRotationAngle(Element selectedElement, Line selectedLine)
         {
