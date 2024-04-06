@@ -2,7 +2,7 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              Title="Менеджер выбора элементов" 
-             Height="500" 
+             Height="550" 
              Width="300">
     <StackPanel Margin="0,0,0,15">
         <Label Content="Выбранные элементы:" Margin="10,10,0,0" Width="135" Height="25" HorizontalAlignment="Left" />
@@ -28,5 +28,8 @@
             Завершить выбор элементов
         </Button>
 
+        <TextBlock
+            Text="{Binding Status}" HorizontalAlignment="Left" Margin="10,10,0,0" Width="350" Height="40" FontWeight="Bold" FontSize="10"
+        />
     </StackPanel>
 </Window>

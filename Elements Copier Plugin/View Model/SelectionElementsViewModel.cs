@@ -10,6 +10,7 @@ using Autodesk.Revit.UI;
 
 namespace Plugin
 {
+
     public class SelectionElementsViewModel : INotifyPropertyChanged
     {
         public event EventHandler StartSettingsWindow;
@@ -23,6 +24,7 @@ namespace Plugin
         public ICommand StopSelectingCommand { get; }
         public ICommand AdditionalElementsCommand { get; }
 
+        #region Инициализация окна выбора элементов
         public SelectionElementsViewModel(Document doc, UIDocument uidoc)
         {
             this.doc = doc;
@@ -32,11 +34,11 @@ namespace Plugin
 
             AdditionalElementsCommand = new RelayCommand(AdditionalElements);
             StopSelectingCommand = new RelayCommand(StopSelecting);
+            Status = DEFAULTSTATUS;
 
             Initialize();
         }
 
-        #region Инициализация окна выбора элементов
         private async void Initialize()
         {
             await Task.Delay(1);
@@ -50,6 +52,8 @@ namespace Plugin
             if (!isSelecting)
             {
                 isSelecting = true;
+                Status = DEFAULTSTATUS;
+
                 RequestElementSelection();
 
                 Task.Delay(500).ContinueWith(_ => isSelecting = false);
@@ -80,6 +84,7 @@ namespace Plugin
                             }
                         }
                     }
+                    Status = "Выбраны элементы. \nЧтобы добавить еще, нажмите 'Добавить'.";
                     isSelecting = false;
                 }
                 catch (Autodesk.Revit.Exceptions.OperationCanceledException) 
@@ -96,6 +101,13 @@ namespace Plugin
                     continueSelecting = false;
                 }
             }
+        }
+
+        private void StopSelecting(object parameter)
+        {
+            Status = "Элементы выбраны.";
+            continueSelecting = false;
+            StartSettingsWindow?.Invoke(this, EventArgs.Empty);
         }
         #endregion
 
@@ -126,11 +138,15 @@ namespace Plugin
         private Category GetElementCategory(Element element) { return element?.Category; }
         #endregion
 
-        private void StopSelecting(object parameter)
+        #region Статус текущей операции
+        private string status;
+        public string Status
         {
-            continueSelecting = false;
-            StartSettingsWindow?.Invoke(this, EventArgs.Empty);
+            get { return status; }
+            set { status = value; OnPropertyChanged(); }
         }
+        private const string DEFAULTSTATUS = "Ожидание выбора области объектов...";
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

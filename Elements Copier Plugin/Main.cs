@@ -19,13 +19,11 @@ namespace Plugin
                 uidoc = uiapp.ActiveUIDocument;
                 doc = uidoc.Document;
 
-
                 SelectionWindow selectionWindow = new SelectionWindow(doc, uidoc);
                 selectionWindow.Topmost = true;
                 selectionWindow.Show();
 
                 selectionWindow.StartElementsCopier += ElementsCopierWork;
-
 
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
@@ -48,7 +46,7 @@ namespace Plugin
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Ошибка", "Main.60\n" + ex.Message);
+                TaskDialog.Show("Ошибка", "Main.50\n" + ex.Message);
             }
         }
     }

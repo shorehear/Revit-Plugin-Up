@@ -1,7 +1,6 @@
 ﻿using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
-using System.Threading.Tasks;
 using System;
 
 namespace Plugin
@@ -17,7 +16,10 @@ namespace Plugin
             this.doc = doc;
             this.uidoc = uidoc;
 
-            selectedLine = (ElementsData.SelectedLine).GeometryCurve as Line;
+            if(ElementsData.SelectedLine != null)
+            {
+                selectedLine = (ElementsData.SelectedLine).GeometryCurve as Line;
+            }
         }
 
         public void CopyElements()
@@ -51,15 +53,6 @@ namespace Plugin
                     break;
 
                 case PositionOperations.Error:
-                    switch (operationType.Item2)
-                    {
-                        case MoveOperations.Error:
-                            //
-                            break;
-                    }
-                    break;
-
-                default:
                     TaskDialog.Show("Ошибка", "Некорректно заданная операция");
                     break;
             }
@@ -74,10 +67,9 @@ namespace Plugin
 
                 if (ElementsData.SelectedElements.Count > 0 && ElementsData.SelectedPoint != null)
                 {
-
                     for (int copyIndex = 0; copyIndex < ElementsData.CountElements; copyIndex++)
                     {
-                        XYZ translation = new XYZ(0, 0, 0);
+                        XYZ translation = ElementsData.SelectedPoint;
 
                         foreach (ElementId elementId in ElementsData.SelectedElements)
                         {
@@ -95,7 +87,6 @@ namespace Plugin
                             }
                         }
                     }
-
                     TaskDialog.Show("Успешно", "Элементы скопированы");
                 }
             }
