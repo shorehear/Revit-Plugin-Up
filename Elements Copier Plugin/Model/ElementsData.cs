@@ -22,7 +22,7 @@ namespace Plugin
             NeedRotate = false;
             SelectedAndCopiedElements = false;
             DistanceBetweenElements = 0.0;
-            CountElements = 1;
+            CountElements = 0;
         }
 
         public static void DeleteObj()
@@ -33,7 +33,7 @@ namespace Plugin
             NeedRotate = false;
             SelectedAndCopiedElements = false;
             DistanceBetweenElements = 0.0;
-            CountElements = 1;
+            CountElements = 0;
         }
 
 

@@ -9,7 +9,6 @@ namespace Plugin
     {
         private readonly SelectionElementsViewModel _viewModel;
 
-        public event EventHandler StartElementsCopier;
         public event EventHandler CloseSelectionWindow;
 
         public SelectionWindow(Document doc, UIDocument uidoc)

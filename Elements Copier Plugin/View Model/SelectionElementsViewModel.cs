@@ -64,7 +64,6 @@ namespace Plugin
         #endregion
         
         private bool isSelecting;
-        private const string DEFAULTSTATUS = "Ожидание выбора области объектов...";
 
         #region Инициализация кнопок
         public ICommand AdditionalElementsCommand { get; }
@@ -85,7 +84,7 @@ namespace Plugin
             SelectPointCommand = new RelayCommand(SelectPoint);
             SelectLineCommand = new RelayCommand(SelectLine);
             StopSelectingCommand = new RelayCommand(StopSelecting);
-            Status = DEFAULTSTATUS;
+            Status = StatusType.GetStatusMessage("Default");
 
             Initialize();
         }
@@ -102,7 +101,7 @@ namespace Plugin
             if (!isSelecting)
             {
                 isSelecting = true;
-                Status = DEFAULTSTATUS;
+                Status = StatusType.GetStatusMessage("Default");
 
                 RequestElementSelection();
 
@@ -288,24 +287,20 @@ namespace Plugin
             {
                 if (ElementsData.SelectedLine == null && ElementsData.SelectedPoint == null)
                 {
-                    TaskDialog.Show("Выберите линию и точку", "Не выбрана линия размещения объектов, не выбрана точка в области, " +
-                        "\nотносительно которой совершится копирование. \nПожалуйста, определите недостающие объекты.");
-                    Status = "Для начала копирования ожидается \nвыбор точки и линии.";
+                    Status = StatusType.GetStatusMessage("MissingLineAndPoint");
                 }
                 else if(ElementsData.SelectedLine == null && ElementsData.SelectedPoint != null)
                 {
-                    TaskDialog.Show("Выберите линию", "Не выбрана линия размещения объектов. \nПожалуйста, определите недостающий объект.");
-                    Status = "Для начала копирования ожидается выбор линии.";
+                    Status = StatusType.GetStatusMessage("MissingLine");
                 }
                 else if(ElementsData.SelectedLine != null && ElementsData.SelectedPoint == null)
                 {
-                    TaskDialog.Show("Выберите точку", "Не выбрана точка в области, относительно которой совершится копирование. \nПожалуйста, определите недостающие объекты");
-                    Status = "Для начала копирования ожидается выбор точки.";
+                    Status = StatusType.GetStatusMessage("MissingPoint");
                 }
             }
             else
             {
-                Status = "Элементы выбраны.";
+                Status = StatusType.GetStatusMessage("ObjectsSelected");
                 StartElementsCopier?.Invoke(this, new EventArgs());
             }
         }

@@ -2,6 +2,37 @@
 
 namespace Plugin
 {
+    public static class StatusType
+    {
+        public static string GetStatusMessage(string type)
+        {
+            switch (type)
+            {
+                case "Default":
+                    return "Ожидание выбора области объектов...";
+
+                case "ObjectsSelected":
+                    return "Элементы выбраны.";
+
+                case "MissingLineAndPoint":
+                    TaskDialog.Show("Выберите линию и точку", "Не выбрана линия размещения объектов, не выбрана точка в области, " +
+                         "\nотносительно которой совершится копирование. \nПожалуйста, определите недостающие объекты.");
+                    return "Для начала копирования ожидается \nвыбор точки и линии.";
+
+                case "MissingLine":
+                    TaskDialog.Show("Выберите линию", "Не выбрана линия размещения объектов. \nПожалуйста, определите недостающий объект.");
+                    return "Для начала копирования ожидается выбор линии.";
+
+                case "MissingPoint":
+                    TaskDialog.Show("Выберите точку", "Не выбрана точка в области, относительно которой совершится копирование. \nПожалуйста, определите недостающие объекты");
+                    return "Для начала копирования ожидается выбор точки.";
+
+                default:
+                    return string.Empty;
+            }
+        }
+    }
+
     public enum PositionOperations
     {
         IHavePoint,
@@ -19,7 +50,6 @@ namespace Plugin
 
     public static class OperationType
     {
-
         public static (PositionOperations, MoveOperations) GetOperationType()
         {
             PositionOperations positionOperations;
@@ -54,6 +84,5 @@ namespace Plugin
             }
             return (positionOperations, moveOperations);
         }
-    }
-
+    }    
 }
