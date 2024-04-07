@@ -139,7 +139,7 @@ namespace Plugin
         }
         private void UpdatePointData()
         {
-            SelectedPointData = SelectedPoint != null ? $"X:{SelectedPoint.X:F1}; \nY:{SelectedPoint.Y:F1}; \nZ:{SelectedPoint.Z:F1}" : "0";
+            SelectedPointData = SelectedPoint != null ? $"X: {SelectedPoint.X:F1}; Y: {SelectedPoint.Y:F1}; Z: {SelectedPoint.Z:F1}" : "0";
             OnPropertyChanged();
         }
         #endregion

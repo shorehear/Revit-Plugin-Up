@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         Title="Менеджер выбора элементов" 
         Height="570" 
-        Width="475">
+        Width="480">
     <DockPanel>
         <StackPanel DockPanel.Dock="Left" Margin="0,0,0,0" Width="285">
             <!-- Выбранные элементы отображаются в окне -->
@@ -31,41 +31,52 @@
                 <TextBlock> Точка в выбранной области, <LineBreak/> относительно которой <LineBreak/> совершается копирование:</TextBlock>
             </Label>
             
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Выбрать точку" Command="{Binding SelectPointCommand}" Width="100" Height ="20" HorizontalAlignment="Left" Margin="5,0,0,0">
-                    <Button.ToolTip>
-                        <ToolTip>
-                            <TextBlock Text="Выбранные элементы будут размещены в этой точке"/>
-                        </ToolTip>
-                    </Button.ToolTip>
-                </Button>
-                <Label Content="{Binding SelectedPointData, Mode=OneWay}" Margin="5,0,0,0" Width="75" Height="55" FontSize="11" />
-            </StackPanel>
-
+            <Button Content="Выбрать точку области" Command="{Binding SelectPointCommand}" Width="150" Height ="20" HorizontalAlignment="Left" Margin="5,0,0,0">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Выбранные элементы будут размещены в этой точке"/>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Label Content="{Binding SelectedPointData, Mode=OneWay}" 
+                   Margin="5,0,0,0" Width="150" Height="25" 
+                   FontSize="10" FontWeight="Bold"
+                   HorizontalAlignment="Left" HorizontalContentAlignment="Center"/>
+            
             <Label FontSize="11">
-                <TextBlock>Выбранные элементы<LineBreak/> можно скопировать на линию<LineBreak/> либо на точку:</TextBlock>
+                <TextBlock>Выбранные элементы<LineBreak/> можно скопировать <LineBreak/>либо на линию, либо на точку:</TextBlock>
             </Label>
-            <StackPanel Orientation="Horizontal">
-                <Button Content="Выбрать линию" Command="{Binding SelectLineCommand}" Width="100" HorizontalAlignment="Left" Margin="5,10,0,0">
-                    <Button.ToolTip>
-                        <ToolTip>
-                            <TextBlock Text="Копия выбранных элементов будет размещена на этой линии"/>
-                        </ToolTip>
-                    </Button.ToolTip>
-                </Button>
-                <Label Content="{Binding SelectedLineData, Mode=OneWay}" Margin="5,10,0,0" Width="75" Height="25" HorizontalAlignment="Center" FontSize="11" />
-            </StackPanel>
+            <Button Content="Выбрать линию" Command="{Binding SelectLineCommand}" Width="100" HorizontalAlignment="Left" Margin="5,0,0,0">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Копия выбранных элементов будет размещена на этой линии"/>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Label Content="{Binding SelectedLineData, Mode=OneWay}" 
+                   Margin="5,0,0,0" Width="100" Height="20" 
+                   HorizontalAlignment="Left" HorizontalContentAlignment="Center"
+                   FontSize="11" FontWeight="Bold"/>
 
-            <Label Content="Количество копий:" HorizontalAlignment="Left" Margin="0,10,0,0"/>
-            <TextBox Width="120" Height="20" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
+            <Button Content="Выбрать точку копирования" Command="{Binding SelectCopyPointCommand}" Width="170" HorizontalAlignment="Left" Margin="5,0,0,0">
+                <Button.ToolTip>
+                    <ToolTip>
+                        <TextBlock Text="Копия выбранных элементов будет размещена в этой точке"/>
+                    </ToolTip>
+                </Button.ToolTip>
+            </Button>
+            <Label Content="{Binding SelectedCopyPointData, Mode=OneWay}" 
+                   Margin="5,0,0,0" Width="170" Height="20" 
+                   HorizontalAlignment="Left" HorizontalContentAlignment="Center"/>
+            
+            <Label Content="Количество копий:" HorizontalAlignment="Left" Margin="0,0,0,0" Width="115"/>
+            <TextBox Width="115" Height="20" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
                      Text="{Binding CountCopiesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
 
 
             <Label Content ="Дистанция между копиями:" Margin="0,0,0,0"/>
-            <TextBox Width="120" Height="20" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
+            <TextBox Width="115" Height="20" HorizontalAlignment="Left" Margin="5,0,0,0" VerticalAlignment="Center"
                      Text="{Binding DistanceBetweenCopiesText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-
 
             <CheckBox Margin="0,10,0,0" IsChecked="{Binding NeedRotate, Mode=TwoWay}">
                 <TextBlock> Копируемые объекты <LineBreak/> необходимо вращать</TextBlock>
@@ -75,7 +86,7 @@
                 <TextBlock> И выделенные объекты, <LineBreak/> и их копии разместить <LineBreak/> на линии копирования</TextBlock>
             </CheckBox>
 
-            <Button Command="{Binding StopSelectingCommand}" Width="85" Margin="0,0,25,0" HorizontalAlignment="Right">
+            <Button Command="{Binding StopSelectingCommand}" Width="85" Margin="0,45,25,0" HorizontalAlignment="Right">
                 <Button.ToolTip>
                     <ToolTip>
                         <TextBlock Text="Начать копирование"/>
