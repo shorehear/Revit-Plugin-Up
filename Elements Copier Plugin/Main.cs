@@ -23,7 +23,7 @@ namespace Plugin
                 selectionWindow.Topmost = true;
                 selectionWindow.Show();
 
-                selectionWindow.StartElementsCopier += ElementsCopierWork;
+                selectionWindow.CloseSelectionWindow += ElementsCopierWork;
 
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)

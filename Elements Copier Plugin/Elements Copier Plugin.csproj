@@ -59,22 +59,14 @@
     <Compile Include="Utilities\Operations.cs" />
     <Compile Include="Utilities\RelayCommand.cs" />
     <Compile Include="View Model\SelectionElementsViewModel.cs" />
-    <Compile Include="View Model\SettingsViewModel.cs" />
     <Compile Include="Utilities\LineFilter.cs" />
     <Compile Include="View\SelectionWindow.xaml.cs">
       <DependentUpon>SelectionWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="View\SettingsWindow.xaml.cs">
-      <DependentUpon>SettingsWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>
     <Page Include="View\SelectionWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="View\SettingsWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
