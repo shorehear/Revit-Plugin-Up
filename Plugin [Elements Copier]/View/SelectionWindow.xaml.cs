@@ -9,10 +9,13 @@ namespace ElementsCopier
     {
         private readonly SelectionElementsViewModel _viewModel;
 
-        public event EventHandler CloseSelectionWindow;
-
+        private Document doc;
+        private UIDocument uidoc;
         public SelectionWindow(Document doc, UIDocument uidoc)
         {
+            this.doc = doc;
+            this.uidoc = uidoc;
+            
             _viewModel = new SelectionElementsViewModel(doc, uidoc);
             DataContext = _viewModel;
             InitializeComponent();
@@ -23,13 +26,15 @@ namespace ElementsCopier
         {
             try
             {
-                CloseSelectionWindow?.Invoke(this, EventArgs.Empty);
-                Close();
+                ElementsCopier elementsCopier = new ElementsCopier(doc, uidoc);
+                elementsCopier.CopyElements();
+
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Ошибка", "xaml30" + ex.Message);
+                TaskDialog.Show("Ошибка", "SelectionWindow.xaml.cs35\n" + ex.Message);
             }
+            Close();
         }
     }
 }

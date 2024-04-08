@@ -22,9 +22,6 @@ namespace ElementsCopier
                 SelectionWindow selectionWindow = new SelectionWindow(doc, uidoc);
                 selectionWindow.Topmost = true;
                 selectionWindow.Show();
-
-                selectionWindow.CloseSelectionWindow += ElementsCopierWork;
-
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
@@ -36,18 +33,6 @@ namespace ElementsCopier
                 return Result.Failed;
             }
             return Result.Succeeded;
-        }
-        private void ElementsCopierWork(object sender, EventArgs e)
-        {
-            try
-            {
-                ElementsCopier elementsCopier = new ElementsCopier(doc, uidoc);
-                elementsCopier.CopyElements();
-            }
-            catch (Exception ex)
-            {
-                TaskDialog.Show("Ошибка", "Main.50\n" + ex.Message);
-            }
         }
     }
 }

@@ -32,7 +32,7 @@ namespace ElementsCopier
                     switch (operationType.Item2)
                     {
                         case MoveOperations.MoveOnlyCopiedElements:
-                            PointAndCopy();
+                            CopyToPoint();
                             break;
                         case MoveOperations.MoveCopiedAndSelecedElements:
                             //
@@ -59,11 +59,12 @@ namespace ElementsCopier
         }
 
         #region Копирование по точке
-        private void PointAndCopy()
+        private void CopyToPoint()
         {
             try
             {
                 Transaction transaction = new Transaction(doc, "Копирование элементов по точке");
+                XYZ translationVector = ElementsData.SelectedCopyPoint - ElementsData.SelectedPoint;
 
                 if (ElementsData.SelectedElements.Count > 0 && ElementsData.SelectedPoint != null)
                 {
@@ -73,11 +74,11 @@ namespace ElementsCopier
 
                         foreach (ElementId elementId in ElementsData.SelectedElements)
                         {
-                            ICollection<ElementId> newElementsIds = ElementTransformUtils.CopyElements(doc, new List<ElementId> { elementId }, translation);
+                            ICollection<ElementId> newElementsIds = ElementTransformUtils.CopyElements(doc, new List<ElementId> { elementId }, translationVector);
 
                             if (newElementsIds != null && newElementsIds.Count > 0)
                             {
-                                translation = ElementsData.SelectedPoint;
+                                translation = translationVector;
                             }
                             else
                             {
