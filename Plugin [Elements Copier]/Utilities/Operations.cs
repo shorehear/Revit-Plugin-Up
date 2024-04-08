@@ -14,17 +14,12 @@ namespace ElementsCopier
                 case "ObjectsSelected":
                     return "Элементы выбраны.";
 
-                case "MissingLineAndPoint":
-                    TaskDialog.Show("Выберите линию и точку", "Не выбрана линия размещения объектов, не выбрана точка в области, " +
-                         "\nотносительно которой совершится копирование. \nПожалуйста, определите недостающие объекты.");
-                    return "Для начала копирования ожидается \nвыбор точки и линии.";
-
-                case "MissingLine":
-                    TaskDialog.Show("Выберите линию", "Не выбрана линия размещения объектов. \nПожалуйста, определите недостающий объект.");
-                    return "Для начала копирования ожидается \nвыбор линии.";
+                case "MissingLineAndCopyPoint":
+                    TaskDialog.Show("Линия или точка", "Не выбран объект, относительно которого совершится копирование. Пожалуйста, определите точку копирования или линию.");
+                    return "Для начала копирования ожидается \nвыбор точки или линии.";
 
                 case "MissingPoint":
-                    TaskDialog.Show("Выберите точку", "Не выбрана точка в области, \nотносительно которой совершится копирование. \nПожалуйста, определите недостающие объекты.");
+                    TaskDialog.Show("Выберите точку", "Не выбрана точка в области, относительно которой совершится копирование. Пожалуйста, определите недостающие объекты.");
                     return "Для начала копирования ожидается \nвыбор точки.";
 
                 case "SelectPoint":
@@ -42,6 +37,17 @@ namespace ElementsCopier
                 case "SelectedCopyPoint":
                     return "Выбрана точка копирования. \nЧтобы добавить еще элементов \nнажмите 'Добавить'.";
 
+                case "UserCanseledOperation":
+                    return "Пользователь отменил операцию.";
+                case "UserCanseledSelection":
+                    return "Пользователь отменил выбор объектов.\nЧтобы возобновить выбор \nнажмите 'Добавить'.";
+
+                case "ZeroCountElements":
+                    return "Не выбрано количество копий элементов. \nПожалуйста, определите \nнедостающий параметр.";
+                case "ZeroDistanceBetweenElements":
+                    TaskDialog.Show("Предупреждение", "Не задана дистанция между элементами. Если количество копий больше одной, наслоении копий друг на друга возможны ошибки.");
+                    return string.Empty;
+
                 default:
                     return string.Empty;
             }
@@ -50,7 +56,7 @@ namespace ElementsCopier
 
     public enum PositionOperations
     {
-        IHavePoint,
+        IHaveCopyPoint,
         IHaveLine,
         IHaveLineAndNeedRotation,
         Error
@@ -70,15 +76,20 @@ namespace ElementsCopier
             PositionOperations positionOperations;
             MoveOperations moveOperations;
 
-
-            if (ElementsData.SelectedPoint != null && !ElementsData.SelectedAndCopiedElements)
+            if (ElementsData.SelectedPoint == null)
             {
-                positionOperations = PositionOperations.IHavePoint;
+                TaskDialog.Show("Ошибка", "Не выбрана точка области. \nПожалуйста, определите точку, относительно которой необходтимо совершить копирование.");
+                positionOperations = PositionOperations.Error;
+                moveOperations = MoveOperations.Error;
+            }
+            else if (ElementsData.SelectedCopyPoint != null && !ElementsData.SelectedAndCopiedElements)
+            {
+                positionOperations = PositionOperations.IHaveCopyPoint;
                 moveOperations = MoveOperations.MoveOnlyCopiedElements;
             }
-            else if (ElementsData.SelectedPoint != null && ElementsData.SelectedAndCopiedElements)
+            else if (ElementsData.SelectedCopyPoint != null && ElementsData.SelectedAndCopiedElements)
             {
-                positionOperations = PositionOperations.IHavePoint;
+                positionOperations = PositionOperations.IHaveCopyPoint;
                 moveOperations = MoveOperations.MoveCopiedAndSelecedElements;
             }
             else if (ElementsData.SelectedLine != null && !ElementsData.SelectedAndCopiedElements)

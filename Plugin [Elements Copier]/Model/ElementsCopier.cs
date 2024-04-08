@@ -28,7 +28,7 @@ namespace ElementsCopier
 
             switch (operationType.Item1)
             {
-                case PositionOperations.IHavePoint:
+                case PositionOperations.IHaveCopyPoint:
                     switch (operationType.Item2)
                     {
                         case MoveOperations.MoveOnlyCopiedElements:

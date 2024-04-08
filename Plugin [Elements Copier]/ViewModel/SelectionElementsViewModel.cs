@@ -8,7 +8,6 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using System.Collections.ObjectModel;
 
 namespace ElementsCopier
 {
@@ -19,7 +18,6 @@ namespace ElementsCopier
         private UIDocument uidoc;
 
         public event EventHandler StartElementsCopier;
-        private bool isSelecting;
 
         #region Инициализация геттеров, сеттеров для Elements Data
         public IList<ElementId> SelectedElements
@@ -79,6 +77,74 @@ namespace ElementsCopier
         public ICommand StopSelectingCommand { get; }
         #endregion
 
+        #region Запуск окна
+        public SelectionElementsViewModel(Document doc, UIDocument uidoc)
+        {
+            this.doc = doc;
+            this.uidoc = uidoc;
+
+            ElementsData.Initialize();
+
+
+            AdditionalElementsCommand = new RelayCommand(AdditionalElements);
+            SelectPointCommand = new RelayCommand(SelectPoint);
+
+            SelectLineCommand = new RelayCommand(SelectLine);
+            SelectCopyPointCommand = new RelayCommand(SelectCopyPoint);
+
+            StopSelectingCommand = new RelayCommand(StopSelecting);
+            Status = StatusType.GetStatusMessage("Default");
+
+            Initialize();
+        }
+
+        private async void Initialize()
+        {
+            await Task.Delay(1);
+            RequestElementSelection();
+        }
+
+        private void AdditionalElements(object parameters)
+        {
+            Status = StatusType.GetStatusMessage("Default");
+            RequestElementSelection();
+        }
+        #endregion
+
+        #region Выбор точки области копируемых элементов
+        private void SelectPoint(object parameter)
+        {
+            try
+            {
+                if (uidoc != null)
+                {
+                    Status = StatusType.GetStatusMessage("SelectPoint");
+                    SelectedPoint = uidoc.Selection.PickPoint("Укажите точку");
+                    SelectedPointData = $"X: {SelectedPoint.X:F1}; Y: {SelectedPoint.Y:F1}; Z: {SelectedPoint.Z:F1}";
+                    Status = StatusType.GetStatusMessage("SelectedPoint");
+                    OnPropertyChanged();
+                }
+            }
+            catch (Autodesk.Revit.Exceptions.OperationCanceledException) 
+            {
+                Status = StatusType.GetStatusMessage("UserCanseledOperation");
+            }
+            catch (Exception ex) { TaskDialog.Show("Ошибка", $"{ex.Message}, [42 settings]"); }
+        }
+        private string selectedPointData;
+        public string SelectedPointData
+        {
+            get { return selectedPointData; }
+            set
+            {
+                selectedPointData = value;
+                OnPropertyChanged();
+            }
+        }
+
+        #endregion
+
+        #region Выбор области для копирования
         private string _selectedItem;
         public string SelectedItem
         {
@@ -109,9 +175,14 @@ namespace ElementsCopier
 
                     SelectedLine = uidoc.Document.GetElement(lineReference) as ModelLine;
                     SelectedItem = SelectedLine.Id.ToString();
+                    Status = StatusType.GetStatusMessage("SelectedLine");
                     OnPropertyChanged(nameof(SelectedItem));
                 }
-                catch(Exception ex)
+                catch (Autodesk.Revit.Exceptions.OperationCanceledException)
+                {
+                    Status = StatusType.GetStatusMessage("UserCanseledOperation");
+                }
+                catch (Exception ex)
                 {
                     TaskDialog.Show("Ошибка", $"{ex.Message}\n[115.ViewModel]");
                 }
@@ -138,78 +209,6 @@ namespace ElementsCopier
                 }
             }
         }
-
-
-        #region Запуск окна
-        public SelectionElementsViewModel(Document doc, UIDocument uidoc)
-        {
-            this.doc = doc;
-            this.uidoc = uidoc;
-
-            ElementsData.Initialize();
-
-
-            AdditionalElementsCommand = new RelayCommand(AdditionalElements);
-            SelectPointCommand = new RelayCommand(SelectPoint);
-
-            SelectLineCommand = new RelayCommand(SelectLine);
-            SelectCopyPointCommand = new RelayCommand(SelectCopyPoint);
-
-            StopSelectingCommand = new RelayCommand(StopSelecting);
-            Status = StatusType.GetStatusMessage("Default");
-
-            Initialize();
-        }
-
-        private async void Initialize()
-        {
-            await Task.Delay(1);
-            isSelecting = true;
-            RequestElementSelection();
-        }
-
-        private void AdditionalElements(object parameters)
-        {
-            if (!isSelecting)
-            {
-                isSelecting = true;
-                Status = StatusType.GetStatusMessage("Default");
-
-                RequestElementSelection();
-
-                Task.Delay(500).ContinueWith(_ => isSelecting = false);
-            }
-        }
-        #endregion
-
-        #region Выбор точки области
-        private void SelectPoint(object parameter)
-        {
-            try
-            {
-                if (uidoc != null)
-                {
-                    Status = StatusType.GetStatusMessage("SelectPoint");
-                    SelectedPoint = uidoc.Selection.PickPoint("Укажите точку");
-                    SelectedPointData = $"X: {SelectedPoint.X:F1}; Y: {SelectedPoint.Y:F1}; Z: {SelectedPoint.Z:F1}";
-                    Status = StatusType.GetStatusMessage("SelectedPoint");
-                    OnPropertyChanged();
-                }
-            }
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException) { TaskDialog.Show("Отмена", "Пользователь отменил операцию."); }
-            catch (Exception ex) { TaskDialog.Show("Ошибка", $"{ex.Message}, [42 settings]"); }
-        }
-        private string selectedPointData;
-        public string SelectedPointData
-        {
-            get { return selectedPointData; }
-            set
-            {
-                selectedPointData = value;
-                OnPropertyChanged();
-            }
-        }
-
         #endregion
 
         #region Настройки копирования элементов
@@ -260,16 +259,14 @@ namespace ElementsCopier
                     }
                 }
                 Status = "Выбраны элементы. \nЧтобы добавить еще, нажмите 'Добавить'.";
-                isSelecting = false;
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
-
-                TaskDialog.Show("Отмена", "Пользователь отменил выбор объектов.");
+                Status = StatusType.GetStatusMessage("UserCanseledSelection");
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Ошибка", $"{ex.Message}, [77 selection]");
+                TaskDialog.Show("Ошибка", $"Кажется, вы нажали кнопку 'Добавить', когда выбор элементов был уже активен. {ex.Message}");
             }
 
         }
@@ -310,25 +307,38 @@ namespace ElementsCopier
         #region Завершение выбора элементов
         private void StopSelecting(object parameter)
         {
-            if (ElementsData.SelectedLine == null || ElementsData.SelectedPoint == null)
+            if (ElementsData.SelectedPoint == null)
             {
-                if (ElementsData.SelectedLine == null && ElementsData.SelectedPoint == null)
-                {
-                    Status = StatusType.GetStatusMessage("MissingLineAndPoint");
-                }
-                else if (ElementsData.SelectedLine == null && ElementsData.SelectedPoint != null)
-                {
-                    Status = StatusType.GetStatusMessage("MissingLine");
-                }
-                else if (ElementsData.SelectedLine != null && ElementsData.SelectedPoint == null)
-                {
-                    Status = StatusType.GetStatusMessage("MissingPoint");
-                }
+                Status = StatusType.GetStatusMessage("MissingPoint");
+            }
+            else if (ElementsData.SelectedLine == null && ElementsData.SelectedCopyPoint == null)
+            {
+                Status = StatusType.GetStatusMessage("MissingLineAndCopyPoint");
             }
             else
             {
-                Status = StatusType.GetStatusMessage("ObjectsSelected");
-                StartElementsCopier?.Invoke(this, new EventArgs());
+                try
+                {
+                    if (ElementsData.CountElements == 0)
+                    {
+                        Status = StatusType.GetStatusMessage("ZeroCountElements");
+                    }
+                    else if (ElementsData.CountElements != 0 && ElementsData.DistanceBetweenElements == 0)
+                    {
+                        Status = StatusType.GetStatusMessage("ZeroDistanceBetweenElements");
+                        Status = StatusType.GetStatusMessage("ObjectsSelected");
+                        StartElementsCopier?.Invoke(this, new EventArgs());
+                    }
+                    else
+                    {
+                        Status = StatusType.GetStatusMessage("ObjectsSelected");
+                        StartElementsCopier?.Invoke(this, new EventArgs());
+                    }
+                }
+                catch (Exception ex)
+                {
+                    TaskDialog.Show("Ошибка", $"{ex.Message}, [340.ViewModel]");
+                }
             }
         }
         #endregion
