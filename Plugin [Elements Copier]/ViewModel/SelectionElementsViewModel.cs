@@ -111,6 +111,28 @@ namespace ElementsCopier
         }
         #endregion
 
+        #region Ориентация дистанции между элементами
+        private string selectedDistanceOption;
+        public string SelectedDistanceOption
+        {
+            get 
+            { 
+                return selectedDistanceOption; 
+            }
+            set 
+            { 
+                selectedDistanceOption = value;
+                SetDistanceOption(selectedDistanceOption);
+            }
+        }
+
+        private void SetDistanceOption(string selectedDistanceOption)
+        {
+            ElementsData.DistanceOption = char.Parse(selectedDistanceOption.Substring(selectedDistanceOption.Length - 1));
+        }
+        #endregion
+
+
         #region Выбор точки области копируемых элементов
         private void SelectPoint(object parameter)
         {

@@ -71,8 +71,20 @@
             <Label Content="Количество копий:" HorizontalAlignment="Left" Margin="20,0,0,0" Width="115"/>
             <TextBox Width="210" Height="20" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center"
                      Text="{Binding CountCopiesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
-            <Label Content ="Дистанция между копиями:" Margin="20,0,0,0"/>
+            <StackPanel Orientation="Horizontal">
+                <Label Content ="Дистанция между копиями:" Margin="17,0,0,0"/>
+                <ComboBox Margin="15,0,0,0" Width="35" Height="20" FontSize="10"
+                          SelectedItem="{Binding SelectedDistanceOption, Mode=TwoWay}">
+                    <ComboBox.ToolTip>
+                        <ToolTip>
+                            Ориентация дистанции.
+                        </ToolTip>
+                    </ComboBox.ToolTip>
+                    <ComboBoxItem IsSelected="True">X</ComboBoxItem>
+                    <ComboBoxItem>Y</ComboBoxItem>
+                    <ComboBoxItem>Z</ComboBoxItem>
+                </ComboBox>
+            </StackPanel>
             <TextBox Width="210" Height="20" HorizontalAlignment="Left" Margin="20,0,0,0" VerticalAlignment="Center"
                      Text="{Binding DistanceBetweenCopiesText, Mode=OneWay, UpdateSourceTrigger=PropertyChanged}"/>
 

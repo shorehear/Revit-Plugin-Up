@@ -12,6 +12,7 @@ namespace ElementsCopier
         public static bool NeedRotate { get; set; }
         public static bool SelectedAndCopiedElements { get; set; }
         public static double DistanceBetweenElements { get; set; }
+        public static char DistanceOption { get; set; }
         public static int CountElements { get; set; }
         public static void Initialize()
         {
@@ -22,6 +23,7 @@ namespace ElementsCopier
             NeedRotate = false;
             SelectedAndCopiedElements = false;
             DistanceBetweenElements = 0.0;
+            DistanceOption = 'X';
             CountElements = 0;
         }
     }
