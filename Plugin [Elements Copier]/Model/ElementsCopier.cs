@@ -58,6 +58,22 @@ namespace ElementsCopier
             }
         }
 
+        private XYZ ChoiceOrientation()
+        {
+            switch (ElementsData.DistanceOption)
+            {
+                case 'X':
+                    
+                    return new XYZ(1*ElementsData.DistanceBetweenElements, 0, 0);
+                case 'Y':
+                    return new XYZ(0, 1 * ElementsData.DistanceBetweenElements, 0);
+                case 'Z':
+                    return new XYZ(0, 0, 1 * ElementsData.DistanceBetweenElements);
+                default:
+                    return new XYZ(0, 0, 0);
+            }
+        }
+        
         #region Копирование по точке
         private void CopyToPoint()
         {
@@ -65,6 +81,8 @@ namespace ElementsCopier
             {
                 Transaction transaction = new Transaction(doc, "Копирование элементов по точке");
                 XYZ translationVector = ElementsData.SelectedCopyPoint - ElementsData.SelectedPoint;
+
+                XYZ orientationChoice = ChoiceOrientation();
 
                 if (ElementsData.SelectedElements.Count > 0 && ElementsData.SelectedPoint != null)
                 {
@@ -78,7 +96,7 @@ namespace ElementsCopier
 
                             if (newElementsIds != null && newElementsIds.Count > 0)
                             {
-                                translation = translationVector;
+                                translation = translationVector + orientationChoice;
                             }
                             else
                             {

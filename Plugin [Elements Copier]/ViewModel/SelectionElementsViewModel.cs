@@ -44,12 +44,6 @@ namespace ElementsCopier
             set { ElementsData.SelectedCopyPoint = value; OnPropertyChanged("Выбранная точка копирования"); }
         }
 
-        public double DistanceBetweenElements
-        {
-            get { return ElementsData.DistanceBetweenElements; }
-            set { ElementsData.DistanceBetweenElements = value; OnPropertyChanged("Дистанция между копиями"); }
-        }
-
         public int CountElements
         {
             get { return ElementsData.CountElements; }
@@ -66,6 +60,11 @@ namespace ElementsCopier
         {
             get { return ElementsData.SelectedAndCopiedElements; }
             set { ElementsData.SelectedAndCopiedElements = value; OnPropertyChanged("Перемещение и выбранных, и копированных элементов"); }
+        }
+        public double DistanceBetweenElements
+        {
+            get { return ElementsData.DistanceBetweenElements; }
+            set { ElementsData.DistanceBetweenElements = value; OnPropertyChanged("Дистанция между копиями"); }
         }
         #endregion
 
@@ -111,28 +110,6 @@ namespace ElementsCopier
         }
         #endregion
 
-        #region Ориентация дистанции между элементами
-        private string selectedDistanceOption;
-        public string SelectedDistanceOption
-        {
-            get 
-            { 
-                return selectedDistanceOption; 
-            }
-            set 
-            { 
-                selectedDistanceOption = value;
-                SetDistanceOption(selectedDistanceOption);
-            }
-        }
-
-        private void SetDistanceOption(string selectedDistanceOption)
-        {
-            ElementsData.DistanceOption = char.Parse(selectedDistanceOption.Substring(selectedDistanceOption.Length - 1));
-        }
-        #endregion
-
-
         #region Выбор точки области копируемых элементов
         private void SelectPoint(object parameter)
         {
@@ -163,7 +140,6 @@ namespace ElementsCopier
                 OnPropertyChanged();
             }
         }
-
         #endregion
 
         #region Выбор области для копирования
@@ -202,7 +178,7 @@ namespace ElementsCopier
                 }
                 catch (Autodesk.Revit.Exceptions.OperationCanceledException)
                 {
-                    Status = StatusType.GetStatusMessage("UserCanseledOperation");
+                    Status = " ";
                 }
                 catch (Exception ex)
                 {
@@ -241,9 +217,13 @@ namespace ElementsCopier
             set
             {
                 countCopies = value;
-                OnPropertyChanged();
-                CountElements = int.Parse(countCopies);
+                SetCountCopies(countCopies);
             }
+        }
+
+        private void SetCountCopies(string countCopies)
+        {
+            CountElements = int.Parse(countCopies);
         }
 
         private string distanceBetweenCopies;
@@ -253,9 +233,13 @@ namespace ElementsCopier
             set
             {
                 distanceBetweenCopies = value;
-                OnPropertyChanged();
-                DistanceBetweenElements = double.Parse(distanceBetweenCopies);
+                SetDistanceBetweenCopies(distanceBetweenCopies);
             }
+        }
+
+        private void SetDistanceBetweenCopies(string distanceBetweenCopies)
+        {
+            DistanceBetweenElements = double.Parse(distanceBetweenCopies);
         }
         #endregion
 
@@ -323,6 +307,27 @@ namespace ElementsCopier
         {
             get { return status; }
             set { status = value; OnPropertyChanged(); }
+        }
+        #endregion
+
+        #region Ориентация дистанции между элементами
+        private string selectedDistanceOption;
+        public string SelectedDistanceOption
+        {
+            get
+            {
+                return selectedDistanceOption;
+            }
+            set
+            {
+                selectedDistanceOption = value;
+                SetDistanceOption(selectedDistanceOption);
+            }
+        }
+
+        private void SetDistanceOption(string selectedDistanceOption)
+        {
+            ElementsData.DistanceOption = char.Parse(selectedDistanceOption.Substring(selectedDistanceOption.Length - 1));
         }
         #endregion
 
