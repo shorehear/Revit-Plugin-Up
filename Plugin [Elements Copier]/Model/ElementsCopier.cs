@@ -44,7 +44,7 @@ namespace ElementsCopier
                     switch (operationType.Item2)
                     {
                         case MoveOperations.MoveOnlyCopiedElements:
-                            LineAndCopy();
+                            CopyToLine();
                             break;
                         case MoveOperations.MoveCopiedAndSelecedElements:
                             //
@@ -58,31 +58,13 @@ namespace ElementsCopier
             }
         }
 
-        private XYZ ChoiceOrientation()
-        {
-            switch (ElementsData.DistanceOption)
-            {
-                case 'X':
-                    
-                    return new XYZ(1*ElementsData.DistanceBetweenElements, 0, 0);
-                case 'Y':
-                    return new XYZ(0, 1 * ElementsData.DistanceBetweenElements, 0);
-                case 'Z':
-                    return new XYZ(0, 0, 1 * ElementsData.DistanceBetweenElements);
-                default:
-                    return new XYZ(0, 0, 0);
-            }
-        }
-        
-        #region Копирование по точке
-        private void CopyToPoint()
+        #region Копирование по линии
+        private void CopyToLine()
         {
             try
             {
-                Transaction transaction = new Transaction(doc, "Копирование элементов по точке");
-                XYZ translationVector = ElementsData.SelectedCopyPoint - ElementsData.SelectedPoint;
-
-                XYZ orientationChoice = ChoiceOrientation();
+                Transaction transaction = new Transaction(doc, "Копирование элементов по линии");
+                XYZ translationVector = selectedLine.GetEndPoint(0) - ElementsData.SelectedPoint;
 
                 if (ElementsData.SelectedElements.Count > 0 && ElementsData.SelectedPoint != null)
                 {
@@ -96,7 +78,47 @@ namespace ElementsCopier
 
                             if (newElementsIds != null && newElementsIds.Count > 0)
                             {
-                                translation = translationVector + orientationChoice;
+                                translation = translationVector;
+                            }
+                            else
+                            {
+                                TaskDialog.Show("Ошибка", "Откат транзакции");
+                                transaction.RollBack();
+                                return;
+                            }
+                        }
+                    }
+                    TaskDialog.Show("Успешно", "Элементы скопированы");
+                }
+            }
+            catch (Exception ex)
+            {
+                TaskDialog.Show("Ошибка", ex.Message);
+            }
+        }
+        #endregion
+
+        #region Копирование по точке
+        private void CopyToPoint()
+        {
+            try
+            {
+                Transaction transaction = new Transaction(doc, "Копирование элементов по точке");
+                XYZ translationVector = ElementsData.SelectedCopyPoint - ElementsData.SelectedPoint;
+
+                if (ElementsData.SelectedElements.Count > 0 && ElementsData.SelectedPoint != null)
+                {
+                    for (int copyIndex = 0; copyIndex < ElementsData.CountElements; copyIndex++)
+                    {
+                        XYZ translation = ElementsData.SelectedPoint;
+
+                        foreach (ElementId elementId in ElementsData.SelectedElements)
+                        {
+                            ICollection<ElementId> newElementsIds = ElementTransformUtils.CopyElements(doc, new List<ElementId> { elementId }, translationVector);
+
+                            if (newElementsIds != null && newElementsIds.Count > 0)
+                            {
+                                translation = translationVector;
                             }
                             else
                             {
@@ -115,44 +137,6 @@ namespace ElementsCopier
             }
         }
         #endregion
-
-        private void LineAndCopy()
-        {
-            try
-            {
-                Transaction transaction = new Transaction(doc, "Копирование элементов по линии");
-
-                if (ElementsData.SelectedElements.Count > 0 && selectedLine != null)
-                {
-                    for (int copyIndex = 0; copyIndex < ElementsData.CountElements; copyIndex++)
-                    {
-                        XYZ translation = selectedLine.GetEndPoint(0);
-
-                        foreach (ElementId elementId in ElementsData.SelectedElements)
-                        {
-                            ICollection<ElementId> newElementsIds = ElementTransformUtils.CopyElements(doc, new List<ElementId> { elementId }, translation);
-
-                            if (newElementsIds != null && newElementsIds.Count > 0)
-                            {
-                                translation = selectedLine.GetEndPoint(0);
-                            }
-                            else
-                            {
-                                TaskDialog.Show("Ошибка", "Откат транзакции");
-                                transaction.RollBack();
-                                return;
-                            }
-                        }
-                    }
-
-                    TaskDialog.Show("Успешно", "Элементы скопированы");
-                }
-            }
-            catch (Exception ex)
-            {
-                TaskDialog.Show("Ошибка", "Произошла ошибка: " + ex.Message);
-            }
-        }
 
         private double GetRotationAngle(Element selectedElement, Line selectedLine)
         {

@@ -64,7 +64,7 @@ namespace ElementsCopier
         public double DistanceBetweenElements
         {
             get { return ElementsData.DistanceBetweenElements; }
-            set { ElementsData.DistanceBetweenElements = value; OnPropertyChanged("Дистанция между копиями"); }
+            set { ElementsData.DistanceBetweenElements = (value/304.8); OnPropertyChanged("Дистанция между копиями"); }
         }
         #endregion
 
@@ -232,8 +232,23 @@ namespace ElementsCopier
             get { return distanceBetweenCopies; }
             set
             {
-                distanceBetweenCopies = value;
-                SetDistanceBetweenCopies(distanceBetweenCopies);
+                if (ElementsData.SelectedLine != null)
+                {
+                    distanceBetweenCopies = value;
+                    if (distanceBetweenCopies.Contains("."))
+                    {
+                        Status = "Пожалуйста, введите \nнецелое число через запятую.";
+                    }
+                    else
+                    {
+                        SetDistanceBetweenCopies(distanceBetweenCopies);
+                        Status = StatusType.GetStatusMessage("");
+                    }
+                }
+                else
+                {
+                    Status = "Выбор дистанции между копиями \nэлементов доступен только \nпри копировании вдоль линии."; 
+                }
             }
         }
 
@@ -307,27 +322,6 @@ namespace ElementsCopier
         {
             get { return status; }
             set { status = value; OnPropertyChanged(); }
-        }
-        #endregion
-
-        #region Ориентация дистанции между элементами
-        private string selectedDistanceOption;
-        public string SelectedDistanceOption
-        {
-            get
-            {
-                return selectedDistanceOption;
-            }
-            set
-            {
-                selectedDistanceOption = value;
-                SetDistanceOption(selectedDistanceOption);
-            }
-        }
-
-        private void SetDistanceOption(string selectedDistanceOption)
-        {
-            ElementsData.DistanceOption = char.Parse(selectedDistanceOption.Substring(selectedDistanceOption.Length - 1));
         }
         #endregion
 
