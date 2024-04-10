@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Revit Plugin [Elements Copier]", "Revit Plugin [Elements Copier]\Revit Plugin [Elements Copier].csproj", "{65995D05-A341-4519-8DB0-54C7B5233631}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ElementsCopier", "Revit Plugin [Elements Copier]\ElementsCopier.csproj", "{65995D05-A341-4519-8DB0-54C7B5233631}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

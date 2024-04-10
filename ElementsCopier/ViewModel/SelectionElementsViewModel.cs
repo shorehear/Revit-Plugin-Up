@@ -59,7 +59,7 @@ namespace ElementsCopier
         public double DistanceBetweenElements
         {
             get { return ElementsData.DistanceBetweenElements; }
-            set { ElementsData.DistanceBetweenElements = (value / 304.8); OnPropertyChanged("Дистанция между копиями"); }
+            set { ElementsData.DistanceBetweenElements = (value); OnPropertyChanged("Дистанция между копиями"); }
         }
 
         public bool WithSourceElements
