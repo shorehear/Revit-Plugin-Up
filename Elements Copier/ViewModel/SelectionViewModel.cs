@@ -148,7 +148,11 @@ namespace ElementsCopier
             set
             {
                 needRotate = value;
+<<<<<<<< HEAD:Elements Copier/ViewModel/SelectionViewModel.cs
                 if (needRotate.GetType() == typeof(bool))
+========
+                if(needRotate.GetType() == typeof(bool))
+>>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ViewModel/SelectionElementsViewModel.cs
                 {
                     NeedRotate = needRotate;
                 }
@@ -162,7 +166,11 @@ namespace ElementsCopier
             set
             {
                 withSourceElements = value;
+<<<<<<<< HEAD:Elements Copier/ViewModel/SelectionViewModel.cs
                 if (withSourceElements.GetType() == typeof(bool))
+========
+                if(withSourceElements.GetType() == typeof(bool))
+>>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ViewModel/SelectionElementsViewModel.cs
                 {
                     WithSourceElements = withSourceElements;
                 }
@@ -217,12 +225,21 @@ namespace ElementsCopier
             {
                 Status = StatusType.GetStatusMessage("CanselOperation");
             }
+<<<<<<<< HEAD:Elements Copier/ViewModel/SelectionViewModel.cs
             catch (Exception ex)
             {
                 TaskDialog.Show("Ошибка", ex.Message + "\n193.ViewModel.");
             }
         }
 
+========
+            catch (Exception ex) 
+            { 
+                TaskDialog.Show("Ошибка", ex.Message + "\n193.ViewModel."); 
+            }
+        }
+               
+>>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ViewModel/SelectionElementsViewModel.cs
         private void SelectLine(object parameter)
         {
             if (uidoc != null)
@@ -284,7 +301,11 @@ namespace ElementsCopier
             }
 
         }
+<<<<<<<< HEAD:Elements Copier/ViewModel/SelectionViewModel.cs
 
+========
+                
+>>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ViewModel/SelectionElementsViewModel.cs
         private void UpdateSelectedElementsText()
         {
             StringBuilder elementsListBuilder = new StringBuilder();

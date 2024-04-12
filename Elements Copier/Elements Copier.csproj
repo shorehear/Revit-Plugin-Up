@@ -4,11 +4,19 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+<<<<<<<< HEAD:Elements Copier/Elements Copier.csproj
     <ProjectGuid>{A80889C9-56FB-48BC-84CD-7022E6D2560E}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Elements_Copier</RootNamespace>
     <AssemblyName>Elements Copier</AssemblyName>
+========
+    <ProjectGuid>{65995D05-A341-4519-8DB0-54C7B5233631}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Revit_Plugin__Elements_Copier_</RootNamespace>
+    <AssemblyName>Revit Plugin [Elements Copier]</AssemblyName>
+>>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ElementsCopier.csproj
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -34,12 +42,15 @@
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="RevitAPI">
+<<<<<<<< HEAD:Elements Copier/Elements Copier.csproj
       <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2023\RevitAPI.dll</HintPath>
       <Private>False</Private>
+========
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2022\RevitAPI.dll</HintPath>
+>>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ElementsCopier.csproj
     </Reference>
     <Reference Include="RevitAPIUI">
-      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2023\RevitAPIUI.dll</HintPath>
-      <Private>False</Private>
+      <HintPath>..\..\..\..\..\..\Program Files\Autodesk\Revit 2022\RevitAPIUI.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -58,15 +69,21 @@
     <Compile Include="Models\ElementsData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Utilities\LineFilter.cs" />
+<<<<<<<< HEAD:Elements Copier/Elements Copier.csproj
     <Compile Include="Utilities\Operations.cs" />
     <Compile Include="Utilities\RelayCommand.cs" />
     <Compile Include="Utilities\Status.cs" />
     <Compile Include="ViewModel\SelectionViewModel.cs" />
+========
+    <Compile Include="Utilities\Operation.cs" />
+    <Compile Include="Utilities\RelayCommand.cs" />
+    <Compile Include="Utilities\StatusInfo.cs" />
+    <Compile Include="ViewModel\SelectionElementsViewModel.cs" />
+>>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ElementsCopier.csproj
     <Compile Include="View\SelectionWindow.xaml.cs">
       <DependentUpon>SelectionWindow.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
     <Page Include="View\SelectionWindow.xaml">
       <SubType>Designer</SubType>
