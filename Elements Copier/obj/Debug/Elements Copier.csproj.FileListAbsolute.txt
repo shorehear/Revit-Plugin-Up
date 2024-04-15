@@ -1,10 +1,11 @@
-C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\bin\Debug\Elements Copier.dll
-C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\bin\Debug\Elements Copier.pdb
 C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.csproj.AssemblyReference.cache
 C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.csproj.CoreCompileInputs.cache
-C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.dll
-C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.pdb
 C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\View\SelectionWindow.baml
 C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\View\SelectionWindow.g.cs
 C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier_MarkupCompile.cache
 C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.g.resources
+C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\bin\Debug\Elements Copier.dll
+C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\bin\Debug\Elements Copier.pdb
+C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.dll
+C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier.pdb
+C:\Users\kaidy\source\repos\Elements Copier\Elements Copier\obj\Debug\Elements Copier_MarkupCompile.lref

@@ -6,9 +6,9 @@ namespace ElementsCopier
 {
     class LineSelectionFilter : ISelectionFilter
     {
-        bool ISelectionFilter.AllowElement(Element elem)
+        bool ISelectionFilter.AllowElement(Element element)
         {
-            return elem is ModelLine ? true : false;
+            return element is ModelLine ? true : false;
         }
 
         bool ISelectionFilter.AllowReference(Reference reference, XYZ position)

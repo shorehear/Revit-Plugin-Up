@@ -2,6 +2,7 @@
 using System;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
+using System.Windows.Controls;
 
 namespace ElementsCopier
 {
@@ -17,24 +18,35 @@ namespace ElementsCopier
             this.uidoc = uidoc;
 
             _viewModel = new SelectionElementsViewModel(doc, uidoc);
-            DataContext = _viewModel;
             InitializeComponent();
+            DataContext = _viewModel;
             _viewModel.StartElementsCopier += ThisStartElementsCopier;
+            listbox.SelectionChanged += ListBox_SelectionChanged;
         }
 
         private void ThisStartElementsCopier(object sender, EventArgs e)
         {
             try
             {
-                ElementsCopier elementsCopier = new ElementsCopier(doc, uidoc);
+                ElementsCopier elementsCopier = new ElementsCopier(doc);
                 elementsCopier.CopyElements();
+                _viewModel.SelectedElements.Clear();
 
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Ошибка", "SelectionWindow.xaml.cs35\n" + ex.Message);
+                TaskDialog.Show("Ошибка", ex.Message);
             }
-            Close();
         }
+
+        private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (sender is ListBox listBox && listBox.SelectedItem is Element selectedElement)
+            {
+                var viewModel = DataContext as SelectionElementsViewModel;
+                viewModel?.ListBox_SelectionChanged(selectedElement);
+            }
+        }
+
     }
 }

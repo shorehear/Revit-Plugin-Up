@@ -8,6 +8,8 @@ using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+using System.Collections.ObjectModel;
+using System.Windows.Controls;
 
 namespace ElementsCopier
 {
@@ -26,12 +28,24 @@ namespace ElementsCopier
         public ICommand StopSelectingCommand { get; }
 
         #region Геттеры, сеттеры ElementsData, SelectionWindow
-        public IList<ElementId> SelectedElements
+        private ObservableCollection<Element> selectedElements;
+        public ObservableCollection<Element> SelectedElements
         {
-            get { return ElementsData.SelectedElements; }
-            set { ElementsData.SelectedElements = value; OnPropertyChanged("Выбранные элементы"); }
+            get { return selectedElements; }
+            set { selectedElements = value; OnPropertyChanged(nameof(SelectedElements)); }
         }
 
+        private void AddSelectedElement(ElementId elementId)
+        {
+            Element element = doc.GetElement(elementId);
+            if (element != null)
+            {
+                SelectedElements.Add(element);
+                ElementsData.SelectedElements.Add(elementId);
+                OnPropertyChanged(nameof(SelectedElements));
+            }
+        }
+        
         public ModelLine SelectedLine
         {
             get { return ElementsData.SelectedLine; }
@@ -50,12 +64,6 @@ namespace ElementsCopier
             set { ElementsData.CountCopies = value; OnPropertyChanged("Количество копий"); }
         }
 
-        public bool NeedRotate
-        {
-            get { return ElementsData.NeedRotate; }
-            set { ElementsData.NeedRotate = value; OnPropertyChanged("Необходимо вращение"); }
-        }
-
         public double DistanceBetweenElements
         {
             get { return ElementsData.DistanceBetweenElements; }
@@ -67,19 +75,6 @@ namespace ElementsCopier
             get { return ElementsData.WithSourceElements; }
             set { ElementsData.WithSourceElements = value; OnPropertyChanged("Перемещение и выбранных, и копированных элементов"); }
         }
-
-
-        private string selectedElementsText;
-        public string SelectedElementsText
-        {
-            get { return selectedElementsText; }
-            set
-            {
-                selectedElementsText = value;
-                OnPropertyChanged();
-            }
-        }
-
 
         private string selectedPoint;
         public string SelectedPointLabel
@@ -141,24 +136,6 @@ namespace ElementsCopier
             }
         }
 
-        private bool needRotate;
-        public bool NeedRotateCheckBox
-        {
-            get { return needRotate; }
-            set
-            {
-                needRotate = value;
-<<<<<<<< HEAD:Elements Copier/ViewModel/SelectionViewModel.cs
-                if (needRotate.GetType() == typeof(bool))
-========
-                if(needRotate.GetType() == typeof(bool))
->>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ViewModel/SelectionElementsViewModel.cs
-                {
-                    NeedRotate = needRotate;
-                }
-            }
-        }
-
         private bool withSourceElements;
         public bool WithSourceElementsCheckBox
         {
@@ -166,14 +143,25 @@ namespace ElementsCopier
             set
             {
                 withSourceElements = value;
-<<<<<<<< HEAD:Elements Copier/ViewModel/SelectionViewModel.cs
-                if (withSourceElements.GetType() == typeof(bool))
-========
-                if(withSourceElements.GetType() == typeof(bool))
->>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ViewModel/SelectionElementsViewModel.cs
                 {
                     WithSourceElements = withSourceElements;
                 }
+            }
+        }
+
+        public void ListBox_SelectionChanged(object sender)
+        {
+            var parameter = sender as Element;
+            DeleteElement(parameter);
+        }
+
+        private void DeleteElement(Element parameter)
+        {
+            if (parameter != null)
+            {
+                SelectedElements.Remove(parameter);
+                ElementsData.SelectedElements.Remove(parameter.Id);
+                OnPropertyChanged(nameof(SelectedElements));
             }
         }
         #endregion
@@ -184,6 +172,8 @@ namespace ElementsCopier
             this.uidoc = uidoc;
 
             ElementsData.Initialize();
+             
+            SelectedElements = new ObservableCollection<Element>();
 
             AdditionalElementsCommand = new RelayCommand(AdditionalElements);
             SelectPointCommand = new RelayCommand(SelectPoint);
@@ -192,6 +182,7 @@ namespace ElementsCopier
 
             Status = "Ожидание выбора области объектов.";
             Initialize();
+
         }
 
         private async void Initialize()
@@ -225,21 +216,8 @@ namespace ElementsCopier
             {
                 Status = StatusType.GetStatusMessage("CanselOperation");
             }
-<<<<<<<< HEAD:Elements Copier/ViewModel/SelectionViewModel.cs
-            catch (Exception ex)
-            {
-                TaskDialog.Show("Ошибка", ex.Message + "\n193.ViewModel.");
-            }
         }
-
-========
-            catch (Exception ex) 
-            { 
-                TaskDialog.Show("Ошибка", ex.Message + "\n193.ViewModel."); 
-            }
-        }
-               
->>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ViewModel/SelectionElementsViewModel.cs
+            
         private void SelectLine(object parameter)
         {
             if (uidoc != null)
@@ -284,8 +262,7 @@ namespace ElementsCopier
                     {
                         if (!ElementsData.SelectedElements.Contains(elementId))
                         {
-                            ElementsData.SelectedElements.Add(elementId);
-                            UpdateSelectedElementsText();
+                            AddSelectedElement(elementId);
                         }
                     }
                 }
@@ -301,27 +278,10 @@ namespace ElementsCopier
             }
 
         }
-<<<<<<<< HEAD:Elements Copier/ViewModel/SelectionViewModel.cs
-
-========
-                
->>>>>>>> d3d0a8c9d1999a19dc9a5f643f4a3043c2e01267:ElementsCopier/ViewModel/SelectionElementsViewModel.cs
-        private void UpdateSelectedElementsText()
-        {
-            StringBuilder elementsListBuilder = new StringBuilder();
-            foreach (var elementId in ElementsData.SelectedElements)
-            {
-                Element element = doc.GetElement(elementId);
-                if (element != null)
-                {
-                    elementsListBuilder.AppendLine($"{element.Name} {element.Id}");
-                }
-            }
-            SelectedElementsText = elementsListBuilder.ToString();
-        }
 
         private void StopSelecting(object parameter)
         {
+            TaskDialog.Show("Lets", "Start!");
             if (ElementsData.SelectedElements == null)
             {
                 Status = StatusType.GetStatusMessage("NoElementsSelected");

@@ -1,28 +1,56 @@
 ﻿<Window x:Class="ElementsCopier.SelectionWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" xmlns:elementscopier="clr-namespace:ElementsCopier" xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         Title="Менеджер выбора элементов" 
         Height="470" 
-        Width="610">
+        Width="590">
     <DockPanel>
+        
+        
         <!--Окно выбранных элементов-->
-        <StackPanel DockPanel.Dock="Left" Margin="0,0,0,0" Width="326">
+        <StackPanel DockPanel.Dock="Left"  Width="325">
             <Label Content="Выбранные элементы:" Margin="15,10,0,0" Width="135" Height="25" HorizontalAlignment="Left" />
-            <TextBox Text="{Binding SelectedElementsText}" IsReadOnly="True" HorizontalAlignment="Center"
-                     VerticalScrollBarVisibility="Auto" Margin="5,0,0,0"
-                     HorizontalScrollBarVisibility="Auto" Width="295" Height="350"/>
 
-            <Button Command="{Binding AdditionalElementsCommand}" Width="80" Margin="0,10,13,0" HorizontalAlignment="Right">
-                <Button.ToolTip>
-                    <ToolTip>
-                        <TextBlock Text="К выбранным элементам добавить дополнительные"></TextBlock>
-                    </ToolTip>
-                </Button.ToolTip>
-                Добавить
-            </Button>
+            <ListBox x:Name="listbox"
+                     ItemsSource="{Binding SelectedElements}" SelectedItem="{Binding SelectedElement}" 
+                     SelectionChanged="ListBox_SelectionChanged"
+                     Height="350" Width="300">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal" Margin="3">
+                            <TextBlock Text="{Binding Name}"/>
+                            <TextBlock Text=" ID: "/>
+                            <TextBlock Text="{Binding Id}"/>
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+
+            <StackPanel Orientation="Horizontal" Margin="5,0,0,0" Width="300">
+                <Button Command="{Binding AdditionalElementsCommand}" Width="80" Margin="218,10,10,0" >
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="К выбранным элементам добавить дополнительные"/>
+                        </ToolTip>
+                    </Button.ToolTip>
+                    Добавить
+                </Button>
+
+                <!--<Button Command="{Binding DeleteElementCommand}" CommandParameter="{Binding SelectedElement}"
+                    Width="80" Margin="0,10,0,0" Click="Button_Click">
+                    <Button.ToolTip>
+                        <ToolTip>
+                            <TextBlock Text="Удалить один из выбранных элементов"/>
+                        </ToolTip>
+                    </Button.ToolTip>
+                    Удалить
+                </Button>-->
+
+
+            </StackPanel>
         </StackPanel>
         <!-- Выбор настроек копирования-->
-        <StackPanel DockPanel.Dock="Right" Margin="0,0,0,0" Width="232">
+        <StackPanel DockPanel.Dock="Right" Margin="0,0,0,0" Width="245">
             <Button Content="Выбрать точку области" Command="{Binding SelectPointCommand}" Width="200" Height ="20" FontSize="12" HorizontalAlignment="Center" Margin="0,35,0,0">
                 <Button.ToolTip>
                     <ToolTip>
@@ -63,7 +91,7 @@
                 <TextBlock> Выделенные объекты и их копии <LineBreak/> разместить на линии копирования.</TextBlock>
             </CheckBox>
 
-            <Button Command="{Binding StopSelectingCommand}" Width="85" Margin="0,17,16,0" HorizontalAlignment="Right">
+            <Button Command="{Binding StopSelectingCommand}" Width="85" Margin="0,17,23,0" HorizontalAlignment="Right">
                 Копировать
             </Button>
         </StackPanel>
