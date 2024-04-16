@@ -11,6 +11,11 @@ namespace ElementsCopier
         public static XYZ SelectedPoint { get; set; }
         public static bool WithSourceElements { get; set; }
         public static double DistanceBetweenElements { get; set; }
+
+        public static void GetDistanceInMM() 
+        {
+            DistanceBetweenElements /= 304.8;
+        } 
         public static int CountCopies { get; set; }
         public static void Initialize()
         {

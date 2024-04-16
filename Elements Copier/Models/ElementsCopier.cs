@@ -2,6 +2,7 @@
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System;
+using System.Net;
 
 namespace ElementsCopier
 {
@@ -13,11 +14,10 @@ namespace ElementsCopier
         public ElementsCopier(Document doc)
         {
             this.doc = doc;
+            ElementsData.GetDistanceInMM();
 
-            if (ElementsData.SelectedLine != null)
-            {
-                selectedLine = (ElementsData.SelectedLine).GeometryCurve as Line;
-            }
+
+            selectedLine = (ElementsData.SelectedLine).GeometryCurve as Line;
         }
 
         public void CopyElements()
@@ -26,11 +26,9 @@ namespace ElementsCopier
             {
                 using (Transaction transaction = new Transaction(doc, "Копирование элементов вдоль линии"))
                 {
-                    XYZ translationVector = selectedLine.GetEndPoint(0) - ElementsData.SelectedPoint;
-                    if (ElementsData.WithSourceElements)
-                    {
-                        ElementTransformUtils.MoveElements(doc, ElementsData.SelectedElements, translationVector);
-                    }
+
+                    XYZ translationVector = (selectedLine.GetEndPoint(0) - ElementsData.SelectedPoint);
+
                     for (int copyIndex = 0; copyIndex < ElementsData.CountCopies; copyIndex++)
                     {
                         foreach (ElementId elementId in ElementsData.SelectedElements)
@@ -43,6 +41,11 @@ namespace ElementsCopier
                             translationVector = translationVector.Add(selectedLine.Direction.Multiply(ElementsData.DistanceBetweenElements));
                         }
                     }
+                    if (ElementsData.WithSourceElements)
+                    {
+                        ElementTransformUtils.MoveElements(doc, ElementsData.SelectedElements, translationVector);
+                    }
+
 
                     ElementsData.SelectedElements.Clear();
                     transaction.Commit();

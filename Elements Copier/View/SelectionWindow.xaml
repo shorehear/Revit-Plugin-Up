@@ -5,8 +5,6 @@
         Height="470" 
         Width="590">
     <DockPanel>
-        
-        
         <!--Окно выбранных элементов-->
         <StackPanel DockPanel.Dock="Left"  Width="325">
             <Label Content="Выбранные элементы:" Margin="15,10,0,0" Width="135" Height="25" HorizontalAlignment="Left" />
@@ -36,20 +34,9 @@
                     Добавить
                 </Button>
 
-                <!--<Button Command="{Binding DeleteElementCommand}" CommandParameter="{Binding SelectedElement}"
-                    Width="80" Margin="0,10,0,0" Click="Button_Click">
-                    <Button.ToolTip>
-                        <ToolTip>
-                            <TextBlock Text="Удалить один из выбранных элементов"/>
-                        </ToolTip>
-                    </Button.ToolTip>
-                    Удалить
-                </Button>-->
-
-
             </StackPanel>
         </StackPanel>
-        <!-- Выбор настроек копирования-->
+
         <StackPanel DockPanel.Dock="Right" Margin="0,0,0,0" Width="245">
             <Button Content="Выбрать точку области" Command="{Binding SelectPointCommand}" Width="200" Height ="20" FontSize="12" HorizontalAlignment="Center" Margin="0,35,0,0">
                 <Button.ToolTip>

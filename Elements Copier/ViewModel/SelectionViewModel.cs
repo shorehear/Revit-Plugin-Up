@@ -49,31 +49,31 @@ namespace ElementsCopier
         public ModelLine SelectedLine
         {
             get { return ElementsData.SelectedLine; }
-            set { ElementsData.SelectedLine = value; OnPropertyChanged("Выбранная линия"); }
+            set { ElementsData.SelectedLine = value; OnPropertyChanged(nameof(SelectedLine)); }
         }
 
         public XYZ SelectedPoint
         {
             get { return ElementsData.SelectedPoint; }
-            set { ElementsData.SelectedPoint = value; OnPropertyChanged("Выбранная точка"); }
+            set { ElementsData.SelectedPoint = value; OnPropertyChanged(nameof(SelectedPoint)); }
         }
 
         public int CountElements
         {
             get { return ElementsData.CountCopies; }
-            set { ElementsData.CountCopies = value; OnPropertyChanged("Количество копий"); }
+            set { ElementsData.CountCopies = value; OnPropertyChanged(nameof(CountElements)); }
         }
 
         public double DistanceBetweenElements
         {
             get { return ElementsData.DistanceBetweenElements; }
-            set { ElementsData.DistanceBetweenElements = (value); OnPropertyChanged("Дистанция между копиями"); }
+            set { ElementsData.DistanceBetweenElements = (value); OnPropertyChanged(nameof(DistanceBetweenElements)); }
         }
 
         public bool WithSourceElements
         {
             get { return ElementsData.WithSourceElements; }
-            set { ElementsData.WithSourceElements = value; OnPropertyChanged("Перемещение и выбранных, и копированных элементов"); }
+            set { ElementsData.WithSourceElements = value; OnPropertyChanged(nameof(WithSourceElements)); }
         }
 
         private string selectedPoint;
@@ -180,7 +180,7 @@ namespace ElementsCopier
             SelectLineCommand = new RelayCommand(SelectLine);
             StopSelectingCommand = new RelayCommand(StopSelecting);
 
-            Status = "Ожидание выбора области объектов.";
+            Status = StatusType.GetStatusMessage("WaitingForSelection");
             Initialize();
 
         }
@@ -242,7 +242,7 @@ namespace ElementsCopier
                 }
                 catch (Exception ex)
                 {
-                    TaskDialog.Show("Ошибка", ex.Message + "\n223.ViewModel.");
+                    TaskDialog.Show("Ошибка", ex.Message);
                 }
             }
         }
@@ -281,7 +281,6 @@ namespace ElementsCopier
 
         private void StopSelecting(object parameter)
         {
-            TaskDialog.Show("Lets", "Start!");
             if (ElementsData.SelectedElements == null)
             {
                 Status = StatusType.GetStatusMessage("NoElementsSelected");
@@ -306,7 +305,7 @@ namespace ElementsCopier
                 }
                 catch (Exception ex)
                 {
-                    TaskDialog.Show("Ошибка", ex.Message + "\n301.ViewModel");
+                    TaskDialog.Show("Ошибка", ex.Message);
                 }
             }
         }
