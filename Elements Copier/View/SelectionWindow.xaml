@@ -4,6 +4,7 @@
         Title="Менеджер выбора элементов" 
         Height="470" 
         Width="590">
+
     <DockPanel>
         <!--Окно выбранных элементов-->
         <StackPanel DockPanel.Dock="Left"  Width="325">

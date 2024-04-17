@@ -3,12 +3,13 @@ using System;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System.Windows.Controls;
+using System.Globalization;
 
 namespace ElementsCopier
 {
     public partial class SelectionWindow : Window
     {
-        private readonly SelectionElementsViewModel _viewModel;
+        public SelectionElementsViewModel _viewModel;
 
         private Document doc;
         private UIDocument uidoc;
@@ -23,20 +24,21 @@ namespace ElementsCopier
             _viewModel.StartElementsCopier += ThisStartElementsCopier;
             listbox.SelectionChanged += ListBox_SelectionChanged;
         }
-
         private void ThisStartElementsCopier(object sender, EventArgs e)
         {
             try
             {
                 ElementsCopier elementsCopier = new ElementsCopier(doc);
                 elementsCopier.CopyElements();
-                _viewModel.SelectedElements.Clear();
 
+
+                _viewModel.ClearAllData();
             }
             catch (Exception ex)
             {
                 TaskDialog.Show("Ошибка", ex.Message);
             }
+
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

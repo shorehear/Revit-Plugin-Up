@@ -36,7 +36,7 @@ namespace ElementsCopier
                 case "NoLineSelected":
                     return "Не выбрана линия копирования. \nУкажите недостающие параметры.";
                 case "NoCountCopies":
-                    return "Не задано количество размещаемых \nкопий. Укажите недостающие параметры.";
+                    return "Не задано количество копий. \nУкажите недостающие параметры.";
 
                 default:
                     return string.Empty;

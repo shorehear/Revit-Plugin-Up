@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -9,11 +8,9 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using System.Collections.ObjectModel;
-using System.Windows.Controls;
 
 namespace ElementsCopier
 {
-
     public class SelectionElementsViewModel : INotifyPropertyChanged
     {
         private Document doc;
@@ -106,33 +103,50 @@ namespace ElementsCopier
             set { status = value; OnPropertyChanged(); }
         }
 
-        private string countCopies;
+        private string countCopies = "0";
         public string CountCopiesText
         {
             get { return countCopies; }
             set
             {
-                countCopies = value;
-                CountElements = int.Parse(countCopies);
+                if (string.IsNullOrWhiteSpace(value))
+                {
+                    countCopies = "0";
+                }
+                else
+                {
+                    countCopies = value;
+                    CountElements = int.Parse(countCopies);
+
+                }
+                OnPropertyChanged(nameof(CountCopiesText));
             }
         }
 
 
-        private string distanceBetweenCopies;
+
+        private string distanceBetweenCopies = "0";
         public string DistanceBetweenCopiesText
         {
             get { return distanceBetweenCopies; }
             set
             {
-                distanceBetweenCopies = value;
-                if (distanceBetweenCopies.Contains("."))
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    Status = StatusType.GetStatusMessage("DistanceContains");
-                }
-                else
+                    countCopies = "0";
+                } else
                 {
-                    DistanceBetweenElements = double.Parse(distanceBetweenCopies);
+                    distanceBetweenCopies = value;
+                    if (distanceBetweenCopies.Contains("."))
+                    {
+                        Status = StatusType.GetStatusMessage("DistanceContains");
+                    }
+                    else
+                    {
+                        DistanceBetweenElements = double.Parse(distanceBetweenCopies);
+                    }
                 }
+                OnPropertyChanged(nameof(DistanceBetweenCopiesText));
             }
         }
 
@@ -146,6 +160,7 @@ namespace ElementsCopier
                 {
                     WithSourceElements = withSourceElements;
                 }
+                OnPropertyChanged(nameof(WithSourceElementsCheckBox));
             }
         }
 
@@ -309,6 +324,21 @@ namespace ElementsCopier
                 }
             }
         }
+
+        public void ClearAllData()
+        {
+            ElementsData.Initialize();
+
+            SelectedElements.Clear();
+            CountCopiesText = "0";
+            DistanceBetweenCopiesText = "0";
+            SelectedLineLabel = string.Empty;
+            SelectedPointLabel = string.Empty;
+            WithSourceElementsCheckBox = false;
+
+            Status = StatusType.GetStatusMessage("WaitingForSelection");
+        }
+
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)

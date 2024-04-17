@@ -16,7 +16,6 @@ namespace ElementsCopier
             this.doc = doc;
             ElementsData.GetDistanceInMM();
 
-
             selectedLine = (ElementsData.SelectedLine).GeometryCurve as Line;
         }
 
@@ -45,15 +44,12 @@ namespace ElementsCopier
                     {
                         ElementTransformUtils.MoveElements(doc, ElementsData.SelectedElements, translationVector);
                     }
-
-
-                    ElementsData.SelectedElements.Clear();
                     transaction.Commit();
                 }
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Ошибка", ex.Message);
+                TaskDialog.Show("Ошибка", "55ElementsCopier.cs" + ex.Message);
             }
         }
     }
