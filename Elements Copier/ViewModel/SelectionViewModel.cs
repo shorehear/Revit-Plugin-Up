@@ -31,17 +31,6 @@ namespace ElementsCopier
             get { return selectedElements; }
             set { selectedElements = value; OnPropertyChanged(nameof(SelectedElements)); }
         }
-
-        private void AddSelectedElement(ElementId elementId)
-        {
-            Element element = doc.GetElement(elementId);
-            if (element != null)
-            {
-                SelectedElements.Add(element);
-                ElementsData.SelectedElements.Add(elementId);
-                OnPropertyChanged(nameof(SelectedElements));
-            }
-        }
         
         public ModelLine SelectedLine
         {
@@ -84,7 +73,6 @@ namespace ElementsCopier
             }
         }
 
-
         private string selectedLine;
         public string SelectedLineLabel
         {
@@ -123,9 +111,7 @@ namespace ElementsCopier
             }
         }
 
-
-
-        private string distanceBetweenCopies = "0";
+        private string distanceBetweenCopies = "0.0";
         public string DistanceBetweenCopiesText
         {
             get { return distanceBetweenCopies; }
@@ -133,7 +119,7 @@ namespace ElementsCopier
             {
                 if (string.IsNullOrWhiteSpace(value))
                 {
-                    countCopies = "0";
+                    distanceBetweenCopies = "0";
                 } else
                 {
                     distanceBetweenCopies = value;
@@ -168,6 +154,17 @@ namespace ElementsCopier
         {
             var parameter = sender as Element;
             DeleteElement(parameter);
+        }
+
+        private void AddSelectedElement(ElementId elementId)
+        {
+            Element element = doc.GetElement(elementId);
+            if (element != null)
+            {
+                SelectedElements.Add(element);
+                ElementsData.SelectedElements.Add(elementId);
+                OnPropertyChanged(nameof(SelectedElements));
+            }
         }
 
         private void DeleteElement(Element parameter)

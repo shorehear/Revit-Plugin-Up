@@ -6,7 +6,9 @@
         Width="590">
 
     <DockPanel>
-        <!--Окно выбранных элементов-->
+        <TabControl>
+            <TabItem Header="Выбранные элементы">
+                <!--Окно выбранных элементов-->
         <StackPanel DockPanel.Dock="Left"  Width="325">
             <Label Content="Выбранные элементы:" Margin="15,10,0,0" Width="135" Height="25" HorizontalAlignment="Left" />
 
@@ -37,7 +39,13 @@
 
             </StackPanel>
         </StackPanel>
-
+            </TabItem>
+            <TabItem Header="Лог">
+                <Grid Width="325">
+                    <TextBlock Text="Это тестовый текст для второй вкладки."/>
+                </Grid>
+            </TabItem>
+        </TabControl>
         <StackPanel DockPanel.Dock="Right" Margin="0,0,0,0" Width="245">
             <Button Content="Выбрать точку области" Command="{Binding SelectPointCommand}" Width="200" Height ="20" FontSize="12" HorizontalAlignment="Center" Margin="0,35,0,0">
                 <Button.ToolTip>
@@ -73,7 +81,6 @@
 
             <TextBox Width="200" Height="20" HorizontalAlignment="Center" Margin="0,0,0,0"
                      Text="{Binding DistanceBetweenCopiesText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-
 
             <CheckBox Margin="12,10,0,0" IsChecked="{Binding WithSourceElementsCheckBox, Mode=TwoWay}">
                 <TextBlock> Выделенные объекты и их копии <LineBreak/> разместить на линии копирования.</TextBlock>

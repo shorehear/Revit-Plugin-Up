@@ -29,7 +29,7 @@ namespace ElementsCopier
             }
             catch (Exception ex)
             {
-                message = ex.Message;
+                TaskDialog.Show("Ошибка", ex.Message);
                 return Result.Failed;
             }
             return Result.Succeeded;
