@@ -3,42 +3,45 @@ using System;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System.Windows.Controls;
-using System.Globalization;
 
 namespace ElementsCopier
 {
     public partial class SelectionWindow : Window
     {
-        public SelectionElementsViewModel _viewModel;
+        public SelectionElementsViewModel viewModel;
 
         private Document doc;
         private UIDocument uidoc;
+        private PluginLogger logger;
         public SelectionWindow(Document doc, UIDocument uidoc)
         {
             this.doc = doc;
             this.uidoc = uidoc;
+            viewModel = new SelectionElementsViewModel(doc, uidoc);
+            logger = new PluginLogger(viewModel);
 
-            _viewModel = new SelectionElementsViewModel(doc, uidoc);
             InitializeComponent();
-            DataContext = _viewModel;
-            _viewModel.StartElementsCopier += ThisStartElementsCopier;
+            DataContext = viewModel;
+            viewModel.SetLogger(logger);
+
+            viewModel.StartElementsCopier += ThisStartElementsCopier;
             listbox.SelectionChanged += ListBox_SelectionChanged;
         }
+
         private void ThisStartElementsCopier(object sender, EventArgs e)
         {
             try
             {
-                ElementsCopier elementsCopier = new ElementsCopier(doc);
+                ElementsCopier elementsCopier = new ElementsCopier(doc, logger);
                 elementsCopier.CopyElements();
+                logger.LogInformation("Copying is being performed");
 
-
-                _viewModel.ClearAllData();
+                viewModel.ClearAllData();
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Ошибка", ex.Message);
+                logger.LogError(ex.Message);
             }
-
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

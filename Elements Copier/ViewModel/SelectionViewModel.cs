@@ -8,6 +8,7 @@ using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
 using System.Collections.ObjectModel;
+using System.Windows;
 
 namespace ElementsCopier
 {
@@ -17,12 +18,14 @@ namespace ElementsCopier
         private UIDocument uidoc;
 
         public event EventHandler StartElementsCopier;
+        public PluginLogger logger;
         private Category GetElementCategory(Element element) { return element?.Category; }
 
         public ICommand AdditionalElementsCommand { get; }
         public ICommand SelectPointCommand { get; }
         public ICommand SelectLineCommand { get; set; }
         public ICommand StopSelectingCommand { get; }
+        public ICommand CopyClipBoardCommand { get; }
 
         #region Геттеры, сеттеры ElementsData, SelectionWindow
         private ObservableCollection<Element> selectedElements;
@@ -105,7 +108,6 @@ namespace ElementsCopier
                 {
                     countCopies = value;
                     CountElements = int.Parse(countCopies);
-
                 }
                 OnPropertyChanged(nameof(CountCopiesText));
             }
@@ -178,16 +180,27 @@ namespace ElementsCopier
         }
         #endregion
 
+        private string logText;
+        public string LogText
+        {
+            get { return logText; }
+            set
+            {
+                logText = value;
+                OnPropertyChanged(nameof(LogText));
+            }
+        }
+
         public SelectionElementsViewModel(Document doc, UIDocument uidoc)
         {
             this.doc = doc;
             this.uidoc = uidoc;
 
             ElementsData.Initialize();
-             
             SelectedElements = new ObservableCollection<Element>();
 
             AdditionalElementsCommand = new RelayCommand(AdditionalElements);
+            CopyClipBoardCommand = new RelayCommand(CopyClipBoard);
             SelectPointCommand = new RelayCommand(SelectPoint);
             SelectLineCommand = new RelayCommand(SelectLine);
             StopSelectingCommand = new RelayCommand(StopSelecting);
@@ -197,6 +210,15 @@ namespace ElementsCopier
 
         }
 
+        private void CopyClipBoard(object parameter)
+        { 
+            Clipboard.SetText(LogText.ToString());
+        }
+        public void SetLogger(PluginLogger logger)
+        {
+            this.logger = logger;
+            logger.LogInformation("Initialization.");
+        }
         private async void Initialize()
         {
             await Task.Delay(1);
@@ -226,6 +248,7 @@ namespace ElementsCopier
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
+                logger.LogWarning($"Operation Canceled Exception");
                 Status = StatusType.GetStatusMessage("CanselOperation");
             }
         }
@@ -250,11 +273,12 @@ namespace ElementsCopier
                 }
                 catch (Autodesk.Revit.Exceptions.OperationCanceledException)
                 {
+                    logger.LogWarning($"Operation Canceled Exception");
                     Status = StatusType.GetStatusMessage("CanselOperation");
                 }
                 catch (Exception ex)
                 {
-                    TaskDialog.Show("Ошибка", ex.Message);
+                    logger.LogWarning($"{ex.Message}");
                 }
             }
         }
@@ -282,11 +306,12 @@ namespace ElementsCopier
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
+                logger.LogWarning($"Operation Canceled Exception.");
                 Status = StatusType.GetStatusMessage("CanselOperation");
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Ошибка", $"Кажется, вы нажали кнопку 'Добавить', когда выбор элементов был уже активен. \n{ex.Message}");
+                logger.LogError($"{ex.Message}");
             }
 
         }
@@ -317,7 +342,7 @@ namespace ElementsCopier
                 }
                 catch (Exception ex)
                 {
-                    TaskDialog.Show("Ошибка", ex.Message);
+                    logger.LogError($"{ex.Message}");
                 }
             }
         }
@@ -334,6 +359,7 @@ namespace ElementsCopier
             WithSourceElementsCheckBox = false;
 
             Status = StatusType.GetStatusMessage("WaitingForSelection");
+            logger.LogInformation("The collection is ready to select new items.");
         }
 
 

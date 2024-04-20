@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Autodesk.Revit.DB;
-using Autodesk.Revit.UI;
 using System;
 
 namespace ElementsCopier
@@ -9,10 +8,12 @@ namespace ElementsCopier
     {
         private Document doc;
         private Line selectedLine;
+        private PluginLogger logger;
 
-        public ElementsCopier(Document doc)
+        public ElementsCopier(Document doc, PluginLogger logger)
         {
             this.doc = doc;
+            this.logger = logger;
             ElementsData.GetDistanceInMM();
 
             selectedLine = (ElementsData.SelectedLine).GeometryCurve as Line;
@@ -44,11 +45,13 @@ namespace ElementsCopier
                         ElementTransformUtils.MoveElements(doc, ElementsData.SelectedElements, translationVector);
                     }
                     transaction.Commit();
+                    logger.LogInformation("The copy is completed.");
+
                 }
             }
             catch (Exception ex)
             {
-                TaskDialog.Show("Ошибка", "55ElementsCopier.cs" + ex.Message);
+                logger.LogError(ex.Message);
             }
         }
     }

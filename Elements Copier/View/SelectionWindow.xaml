@@ -10,12 +10,11 @@
             <TabItem Header="Выбранные элементы">
                 <!--Окно выбранных элементов-->
         <StackPanel DockPanel.Dock="Left"  Width="325">
-            <Label Content="Выбранные элементы:" Margin="15,10,0,0" Width="135" Height="25" HorizontalAlignment="Left" />
 
             <ListBox x:Name="listbox"
                      ItemsSource="{Binding SelectedElements}" SelectedItem="{Binding SelectedElement}" 
                      SelectionChanged="ListBox_SelectionChanged"
-                     Height="350" Width="300">
+                     Height="350" Width="300" Margin="0,10,0,0">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal" Margin="3">
@@ -40,12 +39,20 @@
             </StackPanel>
         </StackPanel>
             </TabItem>
+            
             <TabItem Header="Лог">
-                <Grid Width="325">
-                    <TextBlock Text="Это тестовый текст для второй вкладки."/>
-                </Grid>
+                <StackPanel>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Auto" 
+                      Width="325">
+                        <TextBlock Text="{Binding LogText}" Width="300" Height="Auto" TextWrapping="Wrap"/>
+                    </ScrollViewer>
+                    <Button Content="Копировать в буфер обмена" Width="170" Margin="140,0,0,0" Command="{Binding CopyClipBoardCommand}"/>
+                </StackPanel>
             </TabItem>
         </TabControl>
+        
+        
         <StackPanel DockPanel.Dock="Right" Margin="0,0,0,0" Width="245">
             <Button Content="Выбрать точку области" Command="{Binding SelectPointCommand}" Width="200" Height ="20" FontSize="12" HorizontalAlignment="Center" Margin="0,35,0,0">
                 <Button.ToolTip>
