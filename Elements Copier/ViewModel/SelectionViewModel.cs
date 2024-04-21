@@ -1,14 +1,15 @@
 ﻿using System;
+using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel;
 using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Runtime.CompilerServices;
+
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using System.Collections.ObjectModel;
-using System.Windows;
 
 namespace ElementsCopier
 {
@@ -17,8 +18,9 @@ namespace ElementsCopier
         private Document doc;
         private UIDocument uidoc;
 
-        public event EventHandler StartElementsCopier;
         public PluginLogger logger;
+        public event EventHandler StartElementsCopier;
+
         private Category GetElementCategory(Element element) { return element?.Category; }
 
         public ICommand AdditionalElementsCommand { get; }
@@ -27,53 +29,28 @@ namespace ElementsCopier
         public ICommand StopSelectingCommand { get; }
         public ICommand CopyClipBoardCommand { get; }
 
-        #region Геттеры, сеттеры ElementsData, SelectionWindow
         private ObservableCollection<Element> selectedElements;
         public ObservableCollection<Element> SelectedElements
         {
             get { return selectedElements; }
             set { selectedElements = value; OnPropertyChanged(nameof(SelectedElements)); }
         }
-        
+        private void AddSelectedElement(ElementId elementId)
+        {
+            Element element = doc.GetElement(elementId);
+            if (element != null)
+            {
+                SelectedElements.Add(element);
+                ElementsData.SelectedElements.Add(elementId);
+                OnPropertyChanged(nameof(SelectedElements));
+            }
+        }
+
+
         public ModelLine SelectedLine
         {
             get { return ElementsData.SelectedLine; }
             set { ElementsData.SelectedLine = value; OnPropertyChanged(nameof(SelectedLine)); }
-        }
-
-        public XYZ SelectedPoint
-        {
-            get { return ElementsData.SelectedPoint; }
-            set { ElementsData.SelectedPoint = value; OnPropertyChanged(nameof(SelectedPoint)); }
-        }
-
-        public int CountElements
-        {
-            get { return ElementsData.CountCopies; }
-            set { ElementsData.CountCopies = value; OnPropertyChanged(nameof(CountElements)); }
-        }
-
-        public double DistanceBetweenElements
-        {
-            get { return ElementsData.DistanceBetweenElements; }
-            set { ElementsData.DistanceBetweenElements = (value); OnPropertyChanged(nameof(DistanceBetweenElements)); }
-        }
-
-        public bool WithSourceElements
-        {
-            get { return ElementsData.WithSourceElements; }
-            set { ElementsData.WithSourceElements = value; OnPropertyChanged(nameof(WithSourceElements)); }
-        }
-
-        private string selectedPoint;
-        public string SelectedPointLabel
-        {
-            get { return selectedPoint; }
-            set
-            {
-                selectedPoint = value;
-                OnPropertyChanged();
-            }
         }
 
         private string selectedLine;
@@ -87,11 +64,27 @@ namespace ElementsCopier
             }
         }
 
-        private string status;
-        public string Status
+        public XYZ SelectedPoint
         {
-            get { return status; }
-            set { status = value; OnPropertyChanged(); }
+            get { return ElementsData.SelectedPoint; }
+            set { ElementsData.SelectedPoint = value; OnPropertyChanged(nameof(SelectedPoint)); }
+        }
+
+        private string selectedPoint;
+        public string SelectedPointLabel
+        {
+            get { return selectedPoint; }
+            set
+            {
+                selectedPoint = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public int CountElements
+        {
+            get { return ElementsData.CountCopies; }
+            set { ElementsData.CountCopies = value; OnPropertyChanged(nameof(CountElements)); }
         }
 
         private string countCopies = "0";
@@ -113,6 +106,12 @@ namespace ElementsCopier
             }
         }
 
+        public double DistanceBetweenElements
+        {
+            get { return ElementsData.DistanceBetweenElements; }
+            set { ElementsData.DistanceBetweenElements = (value); OnPropertyChanged(nameof(DistanceBetweenElements)); }
+        }
+
         private string distanceBetweenCopies = "0.0";
         public string DistanceBetweenCopiesText
         {
@@ -122,7 +121,8 @@ namespace ElementsCopier
                 if (string.IsNullOrWhiteSpace(value))
                 {
                     distanceBetweenCopies = "0";
-                } else
+                }
+                else
                 {
                     distanceBetweenCopies = value;
                     if (distanceBetweenCopies.Contains("."))
@@ -136,6 +136,12 @@ namespace ElementsCopier
                 }
                 OnPropertyChanged(nameof(DistanceBetweenCopiesText));
             }
+        }
+
+        public bool WithSourceElements
+        {
+            get { return ElementsData.WithSourceElements; }
+            set { ElementsData.WithSourceElements = value; OnPropertyChanged(nameof(WithSourceElements)); }
         }
 
         private bool withSourceElements;
@@ -152,33 +158,13 @@ namespace ElementsCopier
             }
         }
 
-        public void ListBox_SelectionChanged(object sender)
+        private string status;
+        public string Status
         {
-            var parameter = sender as Element;
-            DeleteElement(parameter);
+            get { return status; }
+            set { status = value; OnPropertyChanged(); }
         }
 
-        private void AddSelectedElement(ElementId elementId)
-        {
-            Element element = doc.GetElement(elementId);
-            if (element != null)
-            {
-                SelectedElements.Add(element);
-                ElementsData.SelectedElements.Add(elementId);
-                OnPropertyChanged(nameof(SelectedElements));
-            }
-        }
-
-        private void DeleteElement(Element parameter)
-        {
-            if (parameter != null)
-            {
-                SelectedElements.Remove(parameter);
-                ElementsData.SelectedElements.Remove(parameter.Id);
-                OnPropertyChanged(nameof(SelectedElements));
-            }
-        }
-        #endregion
 
         private string logText;
         public string LogText
@@ -190,6 +176,16 @@ namespace ElementsCopier
                 OnPropertyChanged(nameof(LogText));
             }
         }
+        private void CopyClipBoard(object parameter)
+        {
+            Clipboard.SetText(LogText.ToString());
+        }
+        public void SetLogger(PluginLogger logger)
+        {
+            this.logger = logger;
+            logger.LogInformation("Initialization.");
+        }
+
 
         public SelectionElementsViewModel(Document doc, UIDocument uidoc)
         {
@@ -209,27 +205,17 @@ namespace ElementsCopier
             Initialize();
 
         }
-
-        private void CopyClipBoard(object parameter)
-        { 
-            Clipboard.SetText(LogText.ToString());
-        }
-        public void SetLogger(PluginLogger logger)
-        {
-            this.logger = logger;
-            logger.LogInformation("Initialization.");
-        }
         private async void Initialize()
         {
             await Task.Delay(1);
             RequestElementSelection();
         }
-
         private void AdditionalElements(object parameters)
         {
             Status = StatusType.GetStatusMessage("WaitingForSelection");
             RequestElementSelection();
         }
+
 
         private void SelectPoint(object parameter)
         {
@@ -253,6 +239,7 @@ namespace ElementsCopier
             }
         }
             
+
         private void SelectLine(object parameter)
         {
             if (uidoc != null)
@@ -282,6 +269,7 @@ namespace ElementsCopier
                 }
             }
         }
+
 
         private void RequestElementSelection()
         {
@@ -316,6 +304,18 @@ namespace ElementsCopier
 
         }
 
+
+        private void DeleteElement(Element parameter)
+        {
+            if (parameter != null)
+            {
+                SelectedElements.Remove(parameter);
+                ElementsData.SelectedElements.Remove(parameter.Id);
+                OnPropertyChanged(nameof(SelectedElements));
+            }
+        }
+
+
         private void StopSelecting(object parameter)
         {
             if (ElementsData.SelectedElements == null)
@@ -347,6 +347,7 @@ namespace ElementsCopier
             }
         }
 
+
         public void ClearAllData()
         {
             ElementsData.Initialize();
@@ -362,6 +363,12 @@ namespace ElementsCopier
             logger.LogInformation("The collection is ready to select new items.");
         }
 
+
+        public void ListBox_SelectionChanged(object sender)
+        {
+            var parameter = sender as Element;
+            DeleteElement(parameter);
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
         protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
