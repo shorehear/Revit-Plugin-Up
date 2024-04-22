@@ -4,17 +4,17 @@
 library
 C#
 .cs
-C:\Users\kaidy\Desktop\Revit-Plugin-Up\ElementsCopier\obj\Debug\
+C:\Users\kaidy\Desktop\Revit-Plugin-Up\ElementsCopier\obj\Revit 2020\
 ElementsCopier
 none
 false
-DEBUG;TRACE
+TRACE;REVIT2020
 
 1871162140
 
-121446337275
+11-475440846
 15-23047398
 View\MainWindow.xaml;
 
-True
+False
 
