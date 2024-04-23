@@ -2,7 +2,6 @@
 using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel;
-using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.CompilerServices;
@@ -10,25 +9,19 @@ using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-<<<<<<< HEAD
 using Revit.Async;
-=======
->>>>>>> 38a85dc50463e081736e2217b97d258d35004a5d
+using System.Linq;
 
 namespace ElementsCopier
 {
     public class SelectionElementsViewModel : INotifyPropertyChanged
     {
-        //ExternalCommandData commandData;
         private Document doc;
         private UIDocument uidoc;
-
         public PluginLogger logger;
+        
 
-<<<<<<< HEAD
         #region icommand
-=======
->>>>>>> 38a85dc50463e081736e2217b97d258d35004a5d
         public ICommand DeleteAllSelectedElementsCommand { get; }
         public ICommand AdditionalElementsCommand { get; }
         public ICommand SelectPointCommand { get; }
@@ -196,11 +189,11 @@ namespace ElementsCopier
         #region initialization
         public SelectionElementsViewModel()
         {
-            RevitTask.RunAsync((uiapp) => { doc = uiapp.ActiveUIDocument.Document; uidoc = uiapp.ActiveUIDocument; });
-            //ExternalCommandData commandData;
-            //this.commandData = commandData;
-            //doc = commandData.Application.ActiveUIDocument.Document;
-            //uidoc = commandData.Application.ActiveUIDocument;
+            RevitTask.RunAsync((uiapp) => 
+            { 
+                doc = uiapp.ActiveUIDocument.Document; 
+                uidoc = uiapp.ActiveUIDocument; 
+            });
 
             ElementsData.Initialize();
             SelectedElements = new ObservableCollection<Element>();
@@ -213,15 +206,9 @@ namespace ElementsCopier
             StopSelectingCommand = new RelayCommand(StopSelecting);
 
             Status = StatusType.GetStatusMessage("WaitingStartSelection");
-
         }
-<<<<<<< HEAD
 
         public void SetLogger(PluginLogger logger)
-=======
-        
-        private async void Initialize()
->>>>>>> 38a85dc50463e081736e2217b97d258d35004a5d
         {
             this.logger = logger;
             logger.LogInformation("Initialization.");
@@ -263,7 +250,6 @@ namespace ElementsCopier
                 var filter = new LineSelectionFilter();
                 try
                 {
-
                     Status = StatusType.GetStatusMessage("SetLine");
                     var lineReference = uidoc.Selection.PickObject(ObjectType.Element, filter, "Выберите линию");
                     Element selectedElement = uidoc.Document.GetElement(lineReference);
@@ -304,23 +290,59 @@ namespace ElementsCopier
                             if (!ElementsData.SelectedElements.Contains(elementId))
                             {
                                 AddSelectedElement(elementId);
+
+                                Element element = doc.GetElement(elementId);
+
+
+                                if (element is AssemblyInstance)
+                                {
+                                    AssemblyInstance assemblyInstance = element as AssemblyInstance;
+
+                                    ICollection<ElementId> memberIds = assemblyInstance.GetMemberIds();
+                                    foreach (ElementId memberId in memberIds)
+                                    {
+                                        RemoveElementFromSelectedElements(memberId);
+                                    }
+                                }
                             }
                         }
                     }
+
                     Status = StatusType.GetStatusMessage("GetElements");
                 });
-                
-            }
-            catch (Autodesk.Revit.Exceptions.OperationCanceledException)
-            {
-                logger.LogWarning($"Operation Canceled Exception.");
-                Status = StatusType.GetStatusMessage("CanselOperation");
             }
             catch (Exception ex)
             {
-                logger.LogWarning($"{ex.Message}");
+                logger.LogError($"Произошла ошибка: {ex.Message}");
             }
+        }
 
+        private void RemoveElementFromSelectedElements(ElementId elementIdToRemove)
+        {
+            try
+            {
+                List<int> indexesToRemove = new List<int>();
+
+                for (int i = 0; i < SelectedElements.Count; i++)
+                {
+                    if (SelectedElements[i].Id == elementIdToRemove)
+                    {
+                        indexesToRemove.Add(i);
+                    }
+                }
+
+                indexesToRemove.Reverse();
+                foreach (int index in indexesToRemove)
+                {
+                    SelectedElements.RemoveAt(index);
+                }
+
+                OnPropertyChanged(nameof(SelectedElements));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+            }
         }
 
         private void DeleteElement(Element parameter)
@@ -337,10 +359,6 @@ namespace ElementsCopier
         {
             ClearAllData();
         }
-<<<<<<< HEAD
-=======
-
->>>>>>> 38a85dc50463e081736e2217b97d258d35004a5d
 
         private void StopSelecting(object parameter)
         {
