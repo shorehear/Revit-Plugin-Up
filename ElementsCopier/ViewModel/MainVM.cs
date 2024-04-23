@@ -10,7 +10,6 @@ using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.DB.Architecture;
 
 namespace ElementsCopier
 {
@@ -24,6 +23,7 @@ namespace ElementsCopier
 
         private Category GetElementCategory(Element element) { return element?.Category; }
 
+        public ICommand DeleteAllSelectedElementsCommand { get; }
         public ICommand AdditionalElementsCommand { get; }
         public ICommand SelectPointCommand { get; }
         public ICommand SelectLineCommand { get; set; }
@@ -197,6 +197,7 @@ namespace ElementsCopier
             SelectedElements = new ObservableCollection<Element>();
 
             AdditionalElementsCommand = new RelayCommand(AdditionalElements);
+            DeleteAllSelectedElementsCommand = new RelayCommand(DeleteAllElements);
             CopyClipBoardCommand = new RelayCommand(CopyClipBoard);
             SelectPointCommand = new RelayCommand(SelectPoint);
             SelectLineCommand = new RelayCommand(SelectLine);
@@ -206,6 +207,7 @@ namespace ElementsCopier
             Initialize();
 
         }
+        
         private async void Initialize()
         {
             await Task.Delay(1);
@@ -314,6 +316,11 @@ namespace ElementsCopier
                 ElementsData.SelectedElements.Remove(parameter.Id);
                 OnPropertyChanged(nameof(SelectedElements));
             }
+        }
+
+        private void DeleteAllElements(object parameter)
+        {
+            ClearAllData();
         }
 
 
