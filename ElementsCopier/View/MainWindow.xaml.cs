@@ -3,6 +3,7 @@ using System;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using System.Windows.Controls;
+using Revit.Async;
 
 namespace ElementsCopier
 {
@@ -10,39 +11,17 @@ namespace ElementsCopier
     {
         public SelectionElementsViewModel viewModel;
 
-        private Document doc;
-        private UIDocument uidoc;
         private PluginLogger logger;
-        public SelectionWindow(Document doc, UIDocument uidoc)
+        public SelectionWindow()
         {
-            this.doc = doc;
-            this.uidoc = uidoc;
-            viewModel = new SelectionElementsViewModel(doc, uidoc);
+            viewModel = new SelectionElementsViewModel();
             logger = new PluginLogger(viewModel);
 
             InitializeComponent();
             DataContext = viewModel;
             viewModel.SetLogger(logger);
 
-            viewModel.StartElementsCopier += ThisStartElementsCopier;
             listbox.SelectionChanged += ListBox_SelectionChanged;
-        }
-
-        private void ThisStartElementsCopier(object sender, EventArgs e)
-        {
-            try
-            {
-                ElementsCopier elementsCopier = new ElementsCopier(doc, logger);
-
-                elementsCopier.CopyElements();
-                logger.LogInformation("Copying is being performed.");
-                viewModel.ClearAllData();
-
-            }
-            catch (Exception ex)
-            {
-                logger.LogError(ex.Message);
-            }
         }
 
         private void ListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)

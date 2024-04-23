@@ -10,32 +10,67 @@ using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
-using Autodesk.Revit.DB.Architecture;
+using Revit.Async;
 
 namespace ElementsCopier
 {
     public class SelectionElementsViewModel : INotifyPropertyChanged
     {
+        //ExternalCommandData commandData;
         private Document doc;
         private UIDocument uidoc;
 
         public PluginLogger logger;
-        public event EventHandler StartElementsCopier;
 
-        private Category GetElementCategory(Element element) { return element?.Category; }
-
+        #region icommand
+        public ICommand DeleteAllSelectedElementsCommand { get; }
         public ICommand AdditionalElementsCommand { get; }
         public ICommand SelectPointCommand { get; }
         public ICommand SelectLineCommand { get; set; }
         public ICommand StopSelectingCommand { get; }
         public ICommand CopyClipBoardCommand { get; }
+        #endregion
 
+        #region properties
         private ObservableCollection<Element> selectedElements;
         public ObservableCollection<Element> SelectedElements
         {
             get { return selectedElements; }
             set { selectedElements = value; OnPropertyChanged(nameof(SelectedElements)); }
         }
+
+        public ModelLine SelectedLine
+        {
+            get { return ElementsData.SelectedLine; }
+            set { ElementsData.SelectedLine = value; OnPropertyChanged(nameof(SelectedLine)); }
+        }
+
+        public XYZ SelectedPoint
+        {
+            get { return ElementsData.SelectedPoint; }
+            set { ElementsData.SelectedPoint = value; OnPropertyChanged(nameof(SelectedPoint)); }
+        }
+
+        public int CountElements
+        {
+            get { return ElementsData.CountCopies; }
+            set { ElementsData.CountCopies = value; OnPropertyChanged(nameof(CountElements)); }
+        }
+
+        public double DistanceBetweenElements
+        {
+            get { return ElementsData.DistanceBetweenElements; }
+            set { ElementsData.DistanceBetweenElements = (value); OnPropertyChanged(nameof(DistanceBetweenElements)); }
+        }
+
+        public bool WithSourceElements
+        {
+            get { return ElementsData.WithSourceElements; }
+            set { ElementsData.WithSourceElements = value; OnPropertyChanged(nameof(WithSourceElements)); }
+        }
+        #endregion
+
+        #region setters
         private void AddSelectedElement(ElementId elementId)
         {
             Element element = doc.GetElement(elementId);
@@ -45,13 +80,6 @@ namespace ElementsCopier
                 ElementsData.SelectedElements.Add(elementId);
                 OnPropertyChanged(nameof(SelectedElements));
             }
-        }
-
-
-        public ModelLine SelectedLine
-        {
-            get { return ElementsData.SelectedLine; }
-            set { ElementsData.SelectedLine = value; OnPropertyChanged(nameof(SelectedLine)); }
         }
 
         private string selectedLine;
@@ -65,12 +93,6 @@ namespace ElementsCopier
             }
         }
 
-        public XYZ SelectedPoint
-        {
-            get { return ElementsData.SelectedPoint; }
-            set { ElementsData.SelectedPoint = value; OnPropertyChanged(nameof(SelectedPoint)); }
-        }
-
         private string selectedPoint;
         public string SelectedPointLabel
         {
@@ -80,12 +102,6 @@ namespace ElementsCopier
                 selectedPoint = value;
                 OnPropertyChanged();
             }
-        }
-
-        public int CountElements
-        {
-            get { return ElementsData.CountCopies; }
-            set { ElementsData.CountCopies = value; OnPropertyChanged(nameof(CountElements)); }
         }
 
         private string countCopies = "0";
@@ -105,12 +121,6 @@ namespace ElementsCopier
                 }
                 OnPropertyChanged(nameof(CountCopiesText));
             }
-        }
-
-        public double DistanceBetweenElements
-        {
-            get { return ElementsData.DistanceBetweenElements; }
-            set { ElementsData.DistanceBetweenElements = (value); OnPropertyChanged(nameof(DistanceBetweenElements)); }
         }
 
         private string distanceBetweenCopies = "0.0";
@@ -139,12 +149,6 @@ namespace ElementsCopier
             }
         }
 
-        public bool WithSourceElements
-        {
-            get { return ElementsData.WithSourceElements; }
-            set { ElementsData.WithSourceElements = value; OnPropertyChanged(nameof(WithSourceElements)); }
-        }
-
         private bool withSourceElements;
         public bool WithSourceElementsCheckBox
         {
@@ -166,7 +170,6 @@ namespace ElementsCopier
             set { status = value; OnPropertyChanged(); }
         }
 
-
         private string logText;
         public string LogText
         {
@@ -177,46 +180,48 @@ namespace ElementsCopier
                 OnPropertyChanged(nameof(LogText));
             }
         }
+
         private void CopyClipBoard(object parameter)
         {
             Clipboard.SetText(LogText.ToString());
         }
-        public void SetLogger(PluginLogger logger)
-        {
-            this.logger = logger;
-            logger.LogInformation("Initialization.");
-        }
+        #endregion
 
-
-        public SelectionElementsViewModel(Document doc, UIDocument uidoc)
+        #region initialization
+        public SelectionElementsViewModel()
         {
-            this.doc = doc;
-            this.uidoc = uidoc;
+            RevitTask.RunAsync((uiapp) => { doc = uiapp.ActiveUIDocument.Document; uidoc = uiapp.ActiveUIDocument; });
+            //ExternalCommandData commandData;
+            //this.commandData = commandData;
+            //doc = commandData.Application.ActiveUIDocument.Document;
+            //uidoc = commandData.Application.ActiveUIDocument;
 
             ElementsData.Initialize();
             SelectedElements = new ObservableCollection<Element>();
 
             AdditionalElementsCommand = new RelayCommand(AdditionalElements);
+            DeleteAllSelectedElementsCommand = new RelayCommand(DeleteAllElements);
             CopyClipBoardCommand = new RelayCommand(CopyClipBoard);
             SelectPointCommand = new RelayCommand(SelectPoint);
             SelectLineCommand = new RelayCommand(SelectLine);
             StopSelectingCommand = new RelayCommand(StopSelecting);
 
-            Status = StatusType.GetStatusMessage("WaitingForSelection");
-            Initialize();
+            Status = StatusType.GetStatusMessage("WaitingStartSelection");
 
         }
-        private async void Initialize()
+
+        public void SetLogger(PluginLogger logger)
         {
-            await Task.Delay(1);
-            RequestElementSelection();
+            this.logger = logger;
+            logger.LogInformation("Initialization.");
         }
+        #endregion
+
         private void AdditionalElements(object parameters)
         {
             Status = StatusType.GetStatusMessage("WaitingForSelection");
             RequestElementSelection();
         }
-
 
         private void SelectPoint(object parameter)
         {
@@ -239,7 +244,6 @@ namespace ElementsCopier
                 Status = StatusType.GetStatusMessage("CanselOperation");
             }
         }
-
 
         private void SelectLine(object parameter)
         {
@@ -271,27 +275,30 @@ namespace ElementsCopier
             }
         }
 
-
         private void RequestElementSelection()
         {
             try
             {
-                IList<Element> selectedElements = uidoc.Selection.PickElementsByRectangle("Выберите область");
-
-                foreach (Element selectedElement in selectedElements)
+                RevitTask.RunAsync(uiapp =>
                 {
-                    ElementId elementId = selectedElement.Id;
-                    Category category = GetElementCategory(selectedElement);
+                    IList<Element> selectedElements = uidoc.Selection.PickElementsByRectangle("Выберите область");
 
-                    if (category != null)
+                    foreach (Element selectedElement in selectedElements)
                     {
-                        if (!ElementsData.SelectedElements.Contains(elementId))
+                        ElementId elementId = selectedElement.Id;
+                        Category category = GetElementCategory(selectedElement);
+
+                        if (category != null)
                         {
-                            AddSelectedElement(elementId);
+                            if (!ElementsData.SelectedElements.Contains(elementId))
+                            {
+                                AddSelectedElement(elementId);
+                            }
                         }
                     }
-                }
-                Status = StatusType.GetStatusMessage("GetElements");
+                    Status = StatusType.GetStatusMessage("GetElements");
+                });
+                
             }
             catch (Autodesk.Revit.Exceptions.OperationCanceledException)
             {
@@ -305,7 +312,6 @@ namespace ElementsCopier
 
         }
 
-
         private void DeleteElement(Element parameter)
         {
             if (parameter != null)
@@ -316,6 +322,10 @@ namespace ElementsCopier
             }
         }
 
+        private void DeleteAllElements(object parameter)
+        {
+            ClearAllData();
+        }
 
         private void StopSelecting(object parameter)
         {
@@ -339,7 +349,7 @@ namespace ElementsCopier
             {
                 try
                 {
-                    StartElementsCopier?.Invoke(this, new EventArgs());
+                    CopyElements();
                 }
                 catch (Exception ex)
                 {
@@ -348,6 +358,51 @@ namespace ElementsCopier
             }
         }
 
+        private void CopyElements()
+        {
+            ElementsData.ConvertValues();
+            try
+            {
+                Transaction transaction = new Transaction(doc, "Copy Elements");
+                RevitTask.RunAsync(uiapp =>
+                {
+                    if (transaction.Start() == TransactionStatus.Started)
+                    {
+                        XYZ translationVector = ElementsData.selectedLine.GetEndPoint(0) - ElementsData.SelectedPoint;
+
+                        for (int copyIndex = 0; copyIndex < ElementsData.CountCopies; copyIndex++)
+                        {
+                            foreach (ElementId elementId in ElementsData.SelectedElements)
+                            {
+                                ICollection<ElementId> newElementsIds = ElementTransformUtils.CopyElements(doc, new List<ElementId> { elementId }, translationVector);
+                            }
+
+                            if (ElementsData.CountCopies > 1 && ElementsData.DistanceBetweenElements != 0)
+                            {
+                                translationVector = translationVector.Add(ElementsData.selectedLine.Direction.Multiply(ElementsData.DistanceBetweenElements));
+                            }
+                        }
+
+                        if (ElementsData.WithSourceElements)
+                        {
+                            ElementTransformUtils.MoveElements(doc, ElementsData.SelectedElements, translationVector);
+                        }
+                    }
+                    if (transaction.Commit() == TransactionStatus.Committed)
+                    {
+                        logger.LogInformation("The copy is completed.");
+                        ClearAllData();
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex.Message);
+            }
+        }
+
+
+        private Category GetElementCategory(Element element) { return element?.Category; }
 
         public void ClearAllData()
         {
@@ -363,7 +418,6 @@ namespace ElementsCopier
             Status = StatusType.GetStatusMessage("WaitingForSelection");
             logger.LogInformation("The collection is ready to select new items.");
         }
-
 
         public void ListBox_SelectionChanged(object sender)
         {

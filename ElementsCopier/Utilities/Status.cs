@@ -7,6 +7,8 @@ namespace ElementsCopier
         {
             switch (type)
             {
+                case "WaitingStartSelection":
+                    return "Нажмите 'Добавить', \nчтобы выбрать элементы.";
                 case "WaitingForSelection":
                     return "Ожидание выбора области объектов...";
                 case "GetElements":
