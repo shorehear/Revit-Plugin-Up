@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using Autodesk.Revit.DB;
 using System;
+using System.Threading.Tasks;
+using Revit.Async;
+using System.Runtime.CompilerServices;
 
 namespace ElementsCopier
 {
@@ -25,7 +28,10 @@ namespace ElementsCopier
             {
                 using (Transaction transaction = new Transaction(doc, "Копирование элементов вдоль линии"))
                 {
-
+                    RevitTask.RunAsync(
+                        (uiapp) => {
+                        transaction.Start();
+                        });
                     XYZ translationVector = (selectedLine.GetEndPoint(0) - ElementsData.SelectedPoint);
 
                     for (int copyIndex = 0; copyIndex < ElementsData.CountCopies; copyIndex++)
@@ -46,7 +52,6 @@ namespace ElementsCopier
                     }
                     transaction.Commit();
                     logger.LogInformation("The copy is completed.");
-
                 }
             }
             catch (Exception ex)

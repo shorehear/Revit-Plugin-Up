@@ -33,10 +33,11 @@ namespace ElementsCopier
             try
             {
                 ElementsCopier elementsCopier = new ElementsCopier(doc, logger);
-                elementsCopier.CopyElements();
-                logger.LogInformation("Copying is being performed");
 
+                elementsCopier.CopyElements();
+                logger.LogInformation("Copying is being performed.");
                 viewModel.ClearAllData();
+
             }
             catch (Exception ex)
             {

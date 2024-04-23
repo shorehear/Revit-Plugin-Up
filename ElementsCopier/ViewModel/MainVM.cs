@@ -300,7 +300,7 @@ namespace ElementsCopier
             }
             catch (Exception ex)
             {
-                logger.LogError($"{ex.Message}");
+                logger.LogWarning($"{ex.Message}");
             }
 
         }
