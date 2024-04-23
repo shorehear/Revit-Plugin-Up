@@ -10,7 +10,10 @@ using System.Runtime.CompilerServices;
 using Autodesk.Revit.DB;
 using Autodesk.Revit.UI;
 using Autodesk.Revit.UI.Selection;
+<<<<<<< HEAD
 using Revit.Async;
+=======
+>>>>>>> 38a85dc50463e081736e2217b97d258d35004a5d
 
 namespace ElementsCopier
 {
@@ -22,7 +25,10 @@ namespace ElementsCopier
 
         public PluginLogger logger;
 
+<<<<<<< HEAD
         #region icommand
+=======
+>>>>>>> 38a85dc50463e081736e2217b97d258d35004a5d
         public ICommand DeleteAllSelectedElementsCommand { get; }
         public ICommand AdditionalElementsCommand { get; }
         public ICommand SelectPointCommand { get; }
@@ -209,8 +215,13 @@ namespace ElementsCopier
             Status = StatusType.GetStatusMessage("WaitingStartSelection");
 
         }
+<<<<<<< HEAD
 
         public void SetLogger(PluginLogger logger)
+=======
+        
+        private async void Initialize()
+>>>>>>> 38a85dc50463e081736e2217b97d258d35004a5d
         {
             this.logger = logger;
             logger.LogInformation("Initialization.");
@@ -326,6 +337,10 @@ namespace ElementsCopier
         {
             ClearAllData();
         }
+<<<<<<< HEAD
+=======
+
+>>>>>>> 38a85dc50463e081736e2217b97d258d35004a5d
 
         private void StopSelecting(object parameter)
         {
