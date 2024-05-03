@@ -1,0 +1,14 @@
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\bin\Revit 2021\ElementsCopier.dll
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\bin\Revit 2021\ElementsCopier.pdb
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\bin\Revit 2021\Revit.Async.dll
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\bin\Revit 2021\Revit.Async.xml
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\ElementsCopier.csproj.AssemblyReference.cache
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\View\MainWindow.g.cs
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\ElementsCopier_MarkupCompile.cache
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\ElementsCopier_MarkupCompile.lref
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\View\MainWindow.baml
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\ElementsCopier.g.resources
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\ElementsCopier.csproj.CoreCompileInputs.cache
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\ElementsCopier.csproj.CopyComplete
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\ElementsCopier.dll
+C:\VSProjects\Revit-Plugin-Up\ElementsCopier\obj\Revit 2021\ElementsCopier.pdb
