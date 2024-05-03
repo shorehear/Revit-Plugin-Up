@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Windows;
 using System.Windows.Input;
 using System.ComponentModel;
@@ -342,18 +342,15 @@ namespace ElementsCopier
                         var SelectedElementsIds = (from element in ElementsData.SelectedElements
                                                    select element.Id).ToList();
 
+
                         for (int copyIndex = 0; copyIndex < ElementsData.CountCopies; copyIndex++)
                         {
-                            foreach (ElementId elementId in SelectedElementsIds)
-                            {
-                                ICollection<ElementId> newElementsIds = ElementTransformUtils.CopyElements(doc, new List<ElementId> { elementId }, translationVector);
-                            }
+                            ElementTransformUtils.CopyElements(doc, SelectedElementsIds, translationVector);
 
                             if (ElementsData.CountCopies > 1 && ElementsData.DistanceBetweenElements != 0)
                             {
                                 translationVector = translationVector.Add(ElementsData.selectedLine.Direction.Multiply(ElementsData.DistanceBetweenElements));
                             }
-
                         }
 
                         if (ElementsData.WithSourceElements)
